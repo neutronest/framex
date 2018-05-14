@@ -1,5 +1,9 @@
 package com.framex.core
 
-trait BaseFrame {
+import com.framex.core.Expr.{ExType, Expr}
 
+trait BaseFrame[A] {
+  def data: ExType[A]
+  def ndim: Int
+  def shape: List[Int]
 }
