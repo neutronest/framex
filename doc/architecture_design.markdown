@@ -8,7 +8,7 @@ Q1 目标
 
 基于基础模块支撑的上层功能: 
 
-数据加载：
+### 数据加载：
 
 from ND4J
 
@@ -30,5 +30,50 @@ from json
 ```scala
 val jsonData: String = FrameX.fromJson("['foo': [1,2,3], 'bar': [4,5,6]]")
 val fx3 = FrameX.fromJson(jsonData)
+```
+
+### 指定列名:
+
+```scala
+val jsonData: String = FrameX.fromJson("['foo': [1,2,3], 'bar': [4,5,6]]", columns=["A", "B"])
+val fx3 = FrameX.fromJson(jsonData)
+
+
+result:
+	 A      B
+1.  100.   400
+2.  200.   500
+3.  300.   600
+```
+
+### 索引：
+
+行索引:
+
+```
+val jsonData: String = FrameX.fromJson("['foo': List[100,200,300], 'bar': [400,500,600]]", index=List[1,2,3])
+val fx3 = FrameX.fromJson(jsonData)
+
+result:
+	foo    bar
+1.  100.   400
+2.  200.   500
+3.  300.   600
+```
+
+
+
+列索引:
+
+```scala
+val jsonData: String = FrameX.fromJson("['foo': [1,2,3], 'bar': [4,5,6]]")
+val fx3 = FrameX.fromJson(jsonData)
+val fx4 = fx3[["bar", "foo"]]
+```
+
+### 数据 slicing
+
+```
+
 ```
 
