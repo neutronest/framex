@@ -1,0 +1,34 @@
+## FrameX 设计文档
+
+Q1 目标
+
+对标 Pandas, 实现基本的 Block, BlockManager, NDFrame, Series, DataFrame 中的基础功能，比如数据加载与存储，
+
+一期先通过 SeqX 与 FrameX 的抽象，实现基础模块的简化版，可以为之后的扩展做准备。
+
+基于基础模块支撑的上层功能: 
+
+数据加载：
+
+from ND4J
+
+```scala
+INDArray arr1 = Nd4j.create(new float[]{1,2,3,4},new int[]{2,2});
+val fx1 = FrameX.fromNd4j(arr1)
+
+```
+
+from Compute.scala
+
+```scala
+val my2DArray: Tensor = Tensor(Array(Seq(1.0f, 2.0f, 3.0f), Seq(4.0f, 5.0f, 6.0f)))
+val fx2 = FrameX.fromComputeScala(my2DArray)
+```
+
+from json
+
+```scala
+val jsonData: String = FrameX.fromJson("['foo': [1,2,3], 'bar': [4,5,6]]")
+val fx3 = FrameX.fromJson(jsonData)
+```
+
