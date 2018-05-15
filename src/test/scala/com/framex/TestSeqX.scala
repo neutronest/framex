@@ -21,4 +21,10 @@ class TestSeqX extends FlatSpec with Matchers {
 
 
   }
+
+  it should "be able to slice" in {
+    val s = SeqX(Vector(1,2,3,4,5))
+    s.length should be(5)
+    s(2, 4) should be(SeqX(Vector(3,4)))
+  }
 }
