@@ -11,8 +11,7 @@ class TestSeqX extends FlatSpec with Matchers {
   "FromList" should "init seqx from list" in {
 
     val l = List(1,2,3,4,5)
-    var seqX = new SeqX[Int]()
-    seqX.fromList(l)
+    var seqX = SeqX(l)
     for (item <- seqX) {
       println(item.data.toString)
     }
