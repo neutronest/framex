@@ -29,9 +29,15 @@ class SeqX[A] extends Seq[ElemX[A]] {
     this.data.size
   }
 
+  def ndim: Int = 1
+
+  def shape : (Int, Int) = {
+    (1, length)
+  }
+
 //  override def apply(idx: Int): A = ???
 //
-  
+
   override def apply(idx: Int): ElemX[A] = ???
 
   override def iterator: Iterator[ElemX[A]] = {

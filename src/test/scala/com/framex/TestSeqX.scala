@@ -17,6 +17,8 @@ class TestSeqX extends FlatSpec with Matchers {
       println(item.data.toString)
     }
     seqX.length shouldEqual(5)
+    seqX.ndim shouldEqual(1)
+    seqX.shape shouldEqual((1, 5))
 
 
   }
