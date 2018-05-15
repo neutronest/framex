@@ -1,6 +1,6 @@
 package com.framex.core.Expr
 
-sealed trait ExType[A]
+sealed trait ExType[+A]
 
 case object Nan extends ExType[Nothing]
 case class ExInt(i: Int) extends ExType[Int] {
