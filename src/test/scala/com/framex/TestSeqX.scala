@@ -13,6 +13,11 @@ class TestSeqX extends FlatSpec with Matchers {
     val l = List(1,2,3,4,5)
     var seqX = new SeqX[Int]()
     seqX.fromList(l)
-    println(seqX.length)
+    for (item <- seqX) {
+      println(item.data.toString)
+    }
+    seqX.length shouldEqual(5)
+
+
   }
 }
