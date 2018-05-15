@@ -3,7 +3,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import com.framex.core.Expr.Expr
 
-class SeqX[A] extends Seq[A] {
+class SeqX[A] extends Seq[ElemX[A]] {
 
   var data: Vector[ElemX[A]] = Vector()
 
@@ -29,7 +29,12 @@ class SeqX[A] extends Seq[A] {
     this.data.size
   }
 
-  override def apply(idx: Int): A = ???
+//  override def apply(idx: Int): A = ???
+//
+  
+  override def apply(idx: Int): ElemX[A] = ???
 
-  override def iterator: Iterator[A] = ???
+  override def iterator: Iterator[ElemX[A]] = {
+    this.data.iterator
+  }
 }
