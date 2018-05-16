@@ -1,34 +1,29 @@
 package com.framex.core
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.framex.core.Expr.Expr
+import com.framex.core.Expr.BottomType
 
 import scala.reflect.ClassTag
 
-class SeqX[A](var data : Vector[ElemX[A]]) extends Seq[ElemX[A]] {
+class SeqX(var data : Vector[ElemX]) extends Seq[ElemX] {
 
 //  override def ndim: Int = ???
 //
 //  override def shape: List[Int] = ???
 
-  def fromList(l: List[A]): Vector[ElemX[A]] = {
 
-
-    this.data
-  }
-
-  def sameElements(that: SeqX[_]): Boolean = {
+  def sameElements(that: SeqX): Boolean = {
     val these = this.iterator
     val those = that.iterator
     while (these.hasNext && those.hasNext)
-      if (these.next.data != those.next.data)
+      if (!these.next.elem.equals(those.next.elem))
         return false
 
     !these.hasNext && !those.hasNext
   }
 
   override def equals(that: Any): Boolean = that match {
-    case that: SeqX[_] => (that canEqual this) && (this sameElements that)
+    case that: SeqX => (that canEqual this) && (this sameElements that)
     case _               => false
   }
 
@@ -46,11 +41,11 @@ class SeqX[A](var data : Vector[ElemX[A]]) extends Seq[ElemX[A]] {
 //  override def apply(idx: Int): A = ???
 //
 
-  override def apply(idx: Int): ElemX[A] = data.apply(idx)
+  override def apply(idx: Int): ElemX = data.apply(idx)
 
-  def apply(from:Int, to:Int) : SeqX[A] = SeqX(data.slice(from,to))
+  def apply(from:Int, to:Int) : SeqX = SeqX(data.slice(from,to))
 
-  override def iterator: Iterator[ElemX[A]] = {
+  override def iterator: Iterator[ElemX] = {
     this.data.iterator
   }
 }
@@ -58,20 +53,20 @@ class SeqX[A](var data : Vector[ElemX[A]]) extends Seq[ElemX[A]] {
 object SeqX {
 
   @inline
-  def apply[A] (l : List[A]): SeqX[A] = {
+  def apply[A: BottomType] (l : List[A]): SeqX = {
     // TODO: need optimized
-    var elemList : Vector[ElemX[A]] = l.map(item => new ElemX[A](ElemX.from(item))).toVector
+    var elemList : Vector[ElemX] = l.map(item => ElemX(item)).toVector
     SeqX(elemList)
   }
 
-  def apply[A] (data_ : Vector[ElemX[A]]): SeqX[A] = {
+  def apply(data_ : Vector[ElemX]): SeqX = {
     new SeqX(data_)
   }
 
-  def apply[A](data:Vector[A])(implicit tag: ClassTag[A]):SeqX[_] = {
+
+  def apply[A : BottomType](data:Vector[A])(implicit tag: ClassTag[A]):SeqX = {
     SeqX(
       data.map(d => ElemX(d))
-        .map(e => ElemX(e))
     )
   }
 
