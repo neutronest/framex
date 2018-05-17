@@ -8,9 +8,15 @@ class TestFrameX extends FlatSpec with Matchers {
 
   "FromList" should "init FrameX from two dimensional list" in {
 
-    var ll = List(List(1, 2, 3, 4, 5),
+    var ll  = List(List(1, 2, 3, 4, 5),
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val df = FrameX.fromList(ll)
+    df.data.foreach(f => f.foreach(
+      f2 => println(f2.elem)
+    ))
+
+    df(2).map(item => println(item.elem))
   }
   
 }
