@@ -15,8 +15,10 @@ class TestFrameX extends FlatSpec with Matchers {
     df.data.foreach(f => f.foreach(
       f2 => println(f2.elem)
     ))
-
+    //df(2) shouldEqual(FrameX.fromList(List(List(3), List("C"), List("2016-03-03"))))
     df(2).map(item => println(item.elem))
+
+    df(2,4).map(item => println(item.elem))
   }
   
 }
