@@ -7,6 +7,8 @@ lazy val root = (project in file(".")).settings(
   )),
   name := "framex",
   libraryDependencies += scalaTest % Test,
-  libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.12.6"
+  libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.12.6",
+  libraryDependencies += "com.github.tototoshi" %% "scala-csv" % "1.3.5"
+
 
 )

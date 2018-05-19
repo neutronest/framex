@@ -36,6 +36,10 @@ class FrameX(var data: Vector[Vector[ElemX]]) {
     row.toVector
   }
 
+//  def apply(rowSlice: (Int, Int), colSlice: (Int, Int)) : Vector[Vector[ElemX]] = {
+//
+//  }
+
 }
 
 
@@ -53,16 +57,7 @@ object FrameX {
 
   def fromList(ll: List[List[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
     var foobar : Vector[Vector[ElemX]] = ll.map(
-      l => l.map(
-        item => {
-         item match {
-            case item: Int  => ElemX(item.asInstanceOf[Int])
-            case item: Double => ElemX(item.asInstanceOf[Double])
-            case item: String => ElemX(item.asInstanceOf[String])
-            case _ => ElemX(Nan)
-
-          }
-        }).toVector)
+      l => l.map(ElemX.wrapper).toVector)
       .toVector
     apply(foobar)
 
