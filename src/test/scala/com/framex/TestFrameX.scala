@@ -8,7 +8,7 @@ import com.github.tototoshi.csv.CSVWriter
 
 class TestFrameX extends FlatSpec with Matchers {
 
-  "FromList" should "init FrameX from two dimensional list" in {
+  it should "init FrameX from two dimensional list" in {
 
     var ll = List(List(1, 2, 3, 4, 5),
       List("A", "B", "C", "D", "E"),
@@ -23,6 +23,19 @@ class TestFrameX extends FlatSpec with Matchers {
     val df2 = df(2)
     df(2).equals(FrameX.fromList(ll2)) shouldEqual true
     df(2, 4).equals(FrameX.fromList(ll24)) shouldEqual true
+
+    val badLL = List(List(1,2,3), List("C", "D"))
+    val thrown = intercept[Exception] {FrameX.fromList(badLL)}
+    thrown.getMessage shouldEqual("COLUMNS' SIZE MUST SAME!")
+
+  }
+
+  it should "shape" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val df = FrameX.fromList(ll)
+    df.shape().equals((5, 3)) shouldEqual true
   }
 
 //  "Performance test" should "cost small time" in {

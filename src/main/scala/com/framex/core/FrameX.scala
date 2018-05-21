@@ -11,6 +11,7 @@ import scala.reflect.runtime.{universe => ru}
 class FrameX(var data: Vector[Vector[ElemX]]) {
 
   def shape() : (Int, Int) = {
+
     (data(0).size, data.size)
   }
 
@@ -69,6 +70,12 @@ object FrameX {
   def getTypeTag[T: ru.TypeTag](obj: T) = ru.typeTag[T]
 
   def fromList(ll: List[List[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
+
+    val lenOfCol = ll.map(_.size)
+    if (lenOfCol.distinct.size != 1) {
+      throw new Exception("COLUMNS' SIZE MUST SAME!")
+    }
+
     var foobar : Vector[Vector[ElemX]] = ll.map(
       l => l.map(ElemX.wrapper).toVector)
       .toVector
