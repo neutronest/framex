@@ -17,10 +17,12 @@ class TestFrameX extends FlatSpec with Matchers {
     df.data.foreach(f => f.foreach(
       f2 => println(f2.elem)
     ))
-    //df(2) shouldEqual(FrameX.fromList(List(List(3), List("C"), List("2016-03-03"))))
-    df(2).map(item => println(item.elem))
 
-    df(2, 4).map(item => println(item.elem))
+    val ll2 = List(List(3) ,List("C"), List("2016-03-03"))
+    val ll24 = List(List(3 , 4, 5), List("C", "D", "E"), List("2016-03-03","2011-02-02", "2017-02-12"))
+    val df2 = df(2)
+    df(2).equals(FrameX.fromList(ll2)) shouldEqual true
+    df(2, 4).equals(FrameX.fromList(ll24)) shouldEqual true
   }
 
 //  "Performance test" should "cost small time" in {

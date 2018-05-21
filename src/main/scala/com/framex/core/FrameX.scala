@@ -10,38 +10,51 @@ import scala.reflect.runtime.{universe => ru}
 
 class FrameX(var data: Vector[Vector[ElemX]]) {
 
-
-
   def shape() : (Int, Int) = {
     (data(0).size, data.size)
   }
 
   def ndim = 2
 
-  def apply(rowIdx: Int) : Vector[ElemX] = {
+  def apply(rowIdx: Int) : FrameX = {
 
-    var row = new ListBuffer[ElemX]()
+    var row = new ListBuffer[Vector[ElemX]]()
     data.foreach(seq => {
-      row += seq(rowIdx)
+      row += Vector(seq(rowIdx))
     })
-    row.toVector
+    new FrameX(row.toVector)
   }
 
-  def apply(rowFrom: Int, rowTo:Int) : Vector[ElemX] = {
+  def apply(rowFrom: Int, rowTo:Int) : FrameX = {
 
-    var row = new ListBuffer[ElemX]()
+    var row = new ListBuffer[Vector[ElemX]]()
     data.foreach(seq => {
-      row ++= seq.slice(rowFrom, rowTo)
+      row ++= Vector(seq.slice(rowFrom, rowTo))
     })
-    row.toVector
+    new FrameX(row.toVector)
   }
 
-//  def apply(rowSlice: (Int, Int), colSlice: (Int, Int)) : Vector[Vector[ElemX]] = {
-//
-//  }
+  def sameElements(that: FrameX) : Boolean = {
+    val thisEachCol = this.data.iterator
+    val thatEachCol  = that.data.iterator
+    while (thisEachCol.hasNext && thatEachCol.hasNext) {
+      val theseElem = thisEachCol.next.iterator
+      val thoseElem = thatEachCol.next.iterator
+      while (theseElem.hasNext && thoseElem.hasNext) {
+        if (!theseElem.next.elem.equals(thoseElem.next.elem)) {
+          return false
+        }
+      }
+      !theseElem.hasNext && !thoseElem.hasNext
+    }
+    !thisEachCol.hasNext && !thatEachCol.hasNext
+  }
 
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case that: FrameX => this sameElements that
+    case _ => false
+  }
 }
-
 
 object FrameX {
   def apply(data_ : Vector[Vector[ElemX]])(implicit elemCT: ClassTag[Vector[ElemX]]): FrameX = {
@@ -60,7 +73,5 @@ object FrameX {
       l => l.map(ElemX.wrapper).toVector)
       .toVector
     apply(foobar)
-
   }
-
 }
