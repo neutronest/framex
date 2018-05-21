@@ -1,9 +1,4 @@
 package com.framex.core
-
-import java.util.concurrent.CyclicBarrier
-
-import com.framex.core.Expr.{BottomType, ExType, Nan}
-
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -19,7 +14,7 @@ class FrameX(var data: Vector[Vector[ElemX]]) {
 
   def apply(rowIdx: Int) : FrameX = {
 
-    var row = new ListBuffer[Vector[ElemX]]()
+    val row = new ListBuffer[Vector[ElemX]]()
     data.foreach(seq => {
       row += Vector(seq(rowIdx))
     })
@@ -28,7 +23,7 @@ class FrameX(var data: Vector[Vector[ElemX]]) {
 
   def apply(rowFrom: Int, rowTo:Int) : FrameX = {
 
-    var row = new ListBuffer[Vector[ElemX]]()
+    val row = new ListBuffer[Vector[ElemX]]()
     data.foreach(seq => {
       row ++= Vector(seq.slice(rowFrom, rowTo))
     })

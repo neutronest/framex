@@ -25,7 +25,7 @@ object ElemX {
       case item: Int => ElemX(item.asInstanceOf[Int])
       case item: Double => ElemX(item.asInstanceOf[Double])
       case item: String => ElemX(item.asInstanceOf[String])
-      case _ => ElemX(Nan)
+      case _ => ElemX(None)
     }
   }
 

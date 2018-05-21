@@ -2,10 +2,10 @@ package com.framex.core.Expr
 
 sealed trait ExType
 
-case object Nan extends ExType {
+case object None extends ExType {
   override def equals(obj: scala.Any): Boolean = {
     obj match {
-      case Nan => true
+      case None => true
       case _ => false
     }
   }
@@ -46,7 +46,7 @@ object ExType {
       case x: Int => ExInt(x)
       case x: Double => ExDouble (x)
       case x: String => ExString (x)
-      case _ => Nan
+      case _ => None
     }
   }
 //  implicit object ExForNothing extends ExType[Nothing]
