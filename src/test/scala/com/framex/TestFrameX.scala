@@ -1,10 +1,7 @@
 package com.framex
 
-import java.io.File
-
 import org.scalatest._
 import com.framex.core.FrameX
-import com.github.tototoshi.csv.CSVWriter
 
 class TestFrameX extends FlatSpec with Matchers {
 
