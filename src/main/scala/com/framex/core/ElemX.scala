@@ -1,7 +1,8 @@
 package com.framex.core
+
 import com.framex.core.Expr._
 
-class ElemX(var elem : ExType) {
+class ElemX(var elem: ExType) {
 
   def equals(that: ElemX): Boolean = {
     this.elem.equals(that.elem)
@@ -10,12 +11,22 @@ class ElemX(var elem : ExType) {
 
 object ElemX {
 
-  def apply(elem_ : ExType) : ElemX = {
+  def apply(elem_ : ExType): ElemX = {
     new ElemX(elem_)
   }
 
-  def apply[A: BottomType](data: A) : ElemX = {
-   ElemX(ExType(data))
+  def apply[A: BottomType](data: A): ElemX = {
+    ElemX(ExType(data))
+  }
+
+  def wrapper(data: Any): ElemX = {
+
+    data match {
+      case item: Int => ElemX(item.asInstanceOf[Int])
+      case item: Double => ElemX(item.asInstanceOf[Double])
+      case item: String => ElemX(item.asInstanceOf[String])
+      case _ => ElemX(None)
+    }
   }
 
 
