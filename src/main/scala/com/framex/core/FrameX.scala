@@ -1,9 +1,14 @@
 package com.framex.core
+import java.util
+
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
 class FrameX(var data: Vector[Vector[ElemX]]) {
+
+  var columnMap: mutable.HashMap[String, Int] = mutable.HashMap()
 
   def shape() : (Int, Int) = {
 
@@ -28,6 +33,17 @@ class FrameX(var data: Vector[Vector[ElemX]]) {
       row ++= Vector(seq.slice(rowFrom, rowTo))
     })
     new FrameX(row.toVector)
+  }
+
+  def apply(columnName: String) : FrameX = {
+
+    columnMap.get(columnName) match {
+      case Some(columnIdx) => {
+        val series : Vector[ElemX] = data(columnIdx)
+        new FrameX(Vector(series))
+      }
+      case None => throw new Exception("out of size")
+    }
   }
 
   def sameElements(that: FrameX) : Boolean = {
@@ -75,5 +91,24 @@ object FrameX {
       l => l.map(ElemX.wrapper).toVector)
       .toVector
     apply(foobar)
+  }
+
+  def fromList(ll: List[List[_]], columns: List[String]): FrameX  = {
+
+    var columnMap : mutable.HashMap[String, Int] = mutable.HashMap()
+    if (ll.size != columns.size) {
+      throw new Exception("column_names' size is not equal to real data size")
+    }
+
+    columns.zipWithIndex.foreach{
+      case (column, idx) =>
+        columnMap += (column -> idx)
+    }
+
+    var frameX = FrameX.fromList(ll)
+    frameX.columnMap = columnMap
+    frameX
+
+
   }
 }
