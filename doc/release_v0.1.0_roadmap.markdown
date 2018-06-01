@@ -1,0 +1,47 @@
+
+
+Release 0.1.0 features (Todo): 
+
+- [ ] basic Series structure design
+- [ ] basic DataFrame structrure design
+- [ ] IO api from: List / Matrix / csv / json / Nd4j
+- Index features:
+  - [  ] Framex.head : return first n rows
+  - Framex.tail: return last n rows
+  - Framex.loc :
+  - Framex.insert :
+  -  Framex.where
+  - Framex.query
+  - ​
+- Function application
+  - Framex.applyFunc
+  - Framex.applyMap
+  - Framex.aggregate
+  - Framex.groupby
+- Binary Ops
+  - add
+  - sub
+  - mul
+  - div
+- Stats
+  - abs
+  - all
+  - clip
+  - clip_lower
+  - clip_upper
+  - max
+  - mean
+  - median
+  - sum
+  - std
+  - var
+- Miss data handler
+  - dropna
+  - fillna
+  - replace
+- DB-like Ops
+  - append
+  - assign
+  - join
+  - merge
+  - update
