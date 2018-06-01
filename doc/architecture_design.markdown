@@ -1,4 +1,14 @@
-## FrameX 设计文档
+## FrameX Doc 
+
+What is Framex
+
+In many real-world situations, we met the requirement that "transform the algorithms to Java enviroments which implements by python ecosystem (such as numpy, pandas, scikit-learn) originally". We soon found a hard problem: no DataFrame foundations can be used in Java. 
+
+In python, a DataFrame, which provided by pandas, is one of the most important basic foundations in data science.
+
+It become a bridge between raw matrix aggregation , statistic analysis and machine learning models. 
+
+Why framex
 
 Q1 目标
 
