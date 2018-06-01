@@ -4,7 +4,17 @@ Release 0.1.0 features (Todo):
 
 - [ ] basic Series structure design
 - [ ] basic DataFrame structrure design
-- [ ] IO api from: List / Matrix / csv / json / Nd4j
+- IO api from: List / Matrix / csv / json / Nd4j
+  - [ ] from list
+  - [ ] from matrix
+  - [ ] from csv
+  - [ ] from json
+  - [ ] from nd4j matrix
+  - [ ] to list
+  - [ ] to matrix
+  - [ ] to csv
+  - [ ] to json
+  - [ ] to nd4j matrix
 - Index features:
   - [ ] Framex.head : return first n rows
   - [ ] Framex.tail: return last n rows
@@ -12,7 +22,7 @@ Release 0.1.0 features (Todo):
   - [ ] Framex.insert :
   - [ ] Framex.where
   - [ ] Framex.query
-- Function application
+- Functional application
   - [ ] Framex.applyFunc
   - [ ] Framex.applyMap
   - [ ] Framex.aggregate
