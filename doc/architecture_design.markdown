@@ -8,79 +8,7 @@ In python, a DataFrame, which provided by pandas, is one of the most important b
 
 It become a bridge between raw matrix aggregation , statistic analysis and machine learning models. 
 
-
-
-DevRoadmap
-
-Release 0.1.0 features (Todo): 
-
-* basic Series structure design
-* basic DataFrame structrure design
-* IO api from: List / Matrix / csv / json / Nd4j
-* Index features:
-  * Framex.head : return first n rows
-  * Framex.tail: return last n rows
-  * Framex.loc :
-  * Framex.insert :
-  *  Framex.where
-  * Framex.query
-  * ​
-* Function application
-  * Framex.applyFunc
-  * Framex.applyMap
-  * Framex.aggregate
-  * Framex.groupby
-* Binary Ops
-  * add
-  * sub
-  * mul
-  * div
-* Stats
-  * abs
-  * all
-  * clip
-  * clip_lower
-  * clip_upper
-  * max
-  * mean
-  * median
-  * sum
-  * std
-  * var
-* Miss data handler
-  * dropna
-  * fillna
-  * replace
-* DB-like Ops
-  * append
-  * assign
-  * join
-  * merge
-  * update
-
-
-
-TODO
-
 Why framex
-
-Framex is designed as a "pandas implementation in scala" in early time. It will support basic DataFrame operations such as  read from file, get data by row / column / index / axes. More advanced features will keep developed after first release published.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 Q1 目标
 
