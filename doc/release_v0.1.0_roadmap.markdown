@@ -32,6 +32,20 @@ Release 0.1.0 features (Todo):
   - [ ] sub
   - [ ] mul
   - [ ] div
+  - [ ] radd
+  - [ ] rsub
+  - [ ] rmul
+  - [ ] rdiv
+  - [ ] pow
+  - [ ] rpow
+  - [ ] floordiv (Integer division)
+  - [ ] rfloordiv
+  - [ ] dot
+  - [ ] lt
+  - [ ] gt
+  - [ ] le
+  - [ ] ge
+  - [ ] eq
 - Stats
   - [ ] abs
   - [ ] all
