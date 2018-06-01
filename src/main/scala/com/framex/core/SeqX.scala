@@ -1,5 +1,9 @@
+
+/*
+ * Copyright (c) 2018.
+ */
+
 package com.framex.core
-import java.util.concurrent.atomic.AtomicInteger
 
 import com.framex.core.Expr.BottomType
 
@@ -16,8 +20,9 @@ class SeqX(var data : Vector[ElemX]) extends Seq[ElemX] {
     val these = this.iterator
     val those = that.iterator
     while (these.hasNext && those.hasNext)
-      if (!these.next.elem.equals(those.next.elem))
+      if (!these.next.elem.equals(those.next.elem)) {
         return false
+      }
 
     !these.hasNext && !those.hasNext
   }
@@ -27,6 +32,7 @@ class SeqX(var data : Vector[ElemX]) extends Seq[ElemX] {
     case _               => false
   }
 
+  override def hashCode(): Int = super.hashCode()
 
   override def length: Int = {
     this.data.size
