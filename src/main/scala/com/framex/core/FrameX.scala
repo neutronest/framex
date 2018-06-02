@@ -1,23 +1,44 @@
 package com.framex.core
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
-class FrameX(var data: Vector[Vector[ElemX]]) {
+class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = Map()) {
 
-  var columnMap: mutable.HashMap[String, Int] = mutable.HashMap()
-
-  def shape() : (Int, Int) = {
-
+  def shape(): (Int, Int) = {
     (data(0).size, data.size)
+  }
+
+  def head = data.map(_.head)
+
+  def tail(n: Int = 5) = data.map(c => c.slice(c.size - n, c.size))
+
+  def :: = 0 to data(0).size
+
+  def loc(index: Range, columns: List[String]): FrameX = {
+    val d: Vector[Vector[ElemX]] = columns.map { c =>
+      columnMap.get(c) match {
+        case Some(columnIdx) => data(columnIdx).slice(index.start, index.end + 1) //note that contrary to usual python slices, both the start and the stop are included!
+        case None => throw new Exception("out of size")
+      }
+    }
+      .toVector
+    FrameX(d, columns)
+  }
+
+  def loc(index: Range, columnName: String): FrameX = {
+    columnMap.get(columnName) match {
+      case Some(columnIdx) =>
+        val series: Vector[ElemX] = data(columnIdx).slice(index.start, index.end + 1) //note that contrary to usual python slices, both the start and the stop are included!
+        new FrameX(Vector(series))
+      case None => throw new Exception("out of size")
+    }
   }
 
   def ndim = 2
 
-  def apply(rowIdx: Int) : FrameX = {
-
+  def apply(rowIdx: Int): FrameX = {
     val row = new ListBuffer[Vector[ElemX]]()
     data.foreach(seq => {
       row += Vector(seq(rowIdx))
@@ -25,8 +46,7 @@ class FrameX(var data: Vector[Vector[ElemX]]) {
     new FrameX(row.toVector)
   }
 
-  def apply(rowFrom: Int, rowTo:Int) : FrameX = {
-
+  def apply(rowFrom: Int, rowTo: Int): FrameX = {
     val row = new ListBuffer[Vector[ElemX]]()
     data.foreach(seq => {
       row ++= Vector(seq.slice(rowFrom, rowTo))
@@ -34,20 +54,9 @@ class FrameX(var data: Vector[Vector[ElemX]]) {
     new FrameX(row.toVector)
   }
 
-  def apply(columnName: String) : FrameX = {
-
-    columnMap.get(columnName) match {
-      case Some(columnIdx) => {
-        val series : Vector[ElemX] = data(columnIdx)
-        new FrameX(Vector(series))
-      }
-      case None => throw new Exception("out of size")
-    }
-  }
-
-  def sameElements(that: FrameX) : Boolean = {
+  def sameElements(that: FrameX): Boolean = {
     val thisEachCol = this.data.iterator
-    val thatEachCol  = that.data.iterator
+    val thatEachCol = that.data.iterator
     while (thisEachCol.hasNext && thatEachCol.hasNext) {
       val theseElem = thisEachCol.next.iterator
       val thoseElem = thatEachCol.next.iterator
@@ -68,46 +77,46 @@ class FrameX(var data: Vector[Vector[ElemX]]) {
 }
 
 object FrameX {
-  def apply(data_ : Vector[Vector[ElemX]])(implicit elemCT: ClassTag[Vector[ElemX]]): FrameX = {
-    new FrameX(data_)
+
+  def apply(data: Vector[Vector[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
+    val lenOfCol = data.map(_.size)
+    if (lenOfCol.distinct.size != 1) {
+      throw new Exception("COLUMNS' SIZE MUST SAME!")
+    }
+    new FrameX(data.map(_.map(ElemX.wrapper)))
   }
 
-  def apply[A](data_ : Vector[ElemX]) : FrameX = {
+  def apply(data: Vector[Vector[_]], columns: List[String])(implicit ct: ClassTag[ElemX]): FrameX = {
+    if (data.size != columns.size) {
+      throw new Exception("column_names' size is not equal to real data size")
+    }
+
+    val x = FrameX(data)
+    x.columnMap = columns.zipWithIndex.toMap
+    x
+  }
+
+  def apply(data_ : Vector[ElemX]): FrameX = {
     val newFrame = Vector()
     new FrameX(newFrame :+ data_)
   }
 
   def getTypeTag[T: ru.TypeTag](obj: T) = ru.typeTag[T]
 
-  def fromList(ll: List[List[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
-
+  def apply(ll: List[List[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
     val lenOfCol = ll.map(_.size)
     if (lenOfCol.distinct.size != 1) {
       throw new Exception("COLUMNS' SIZE MUST SAME!")
     }
-
-    var foobar : Vector[Vector[ElemX]] = ll.map(
-      l => l.map(ElemX.wrapper).toVector)
-      .toVector
-    apply(foobar)
+    FrameX(ll.map(_.toVector).toVector)
   }
 
-  def fromList(ll: List[List[_]], columns: List[String]): FrameX  = {
-
-    var columnMap : mutable.HashMap[String, Int] = mutable.HashMap()
+  def apply(ll: List[List[_]], columns: List[String]): FrameX = {
     if (ll.size != columns.size) {
       throw new Exception("column_names' size is not equal to real data size")
     }
-
-    columns.zipWithIndex.foreach{
-      case (column, idx) =>
-        columnMap += (column -> idx)
-    }
-
-    var frameX = FrameX.fromList(ll)
-    frameX.columnMap = columnMap
+    val frameX = FrameX(ll)
+    frameX.columnMap = columns.zipWithIndex.toMap
     frameX
-
-
   }
 }
