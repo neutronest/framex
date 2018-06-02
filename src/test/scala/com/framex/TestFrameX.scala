@@ -79,7 +79,7 @@ class TestFrameX extends FlatSpec with Matchers {
     )
   }
 
-  it should "loc" in {
+  it should "loc(::, List(...))" in {
     val ll = List(List(1, 2, 3, 4, 5),
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
@@ -91,6 +91,21 @@ class TestFrameX extends FlatSpec with Matchers {
     x.data shouldEqual Vector(
       Vector(ElemX(1), ElemX(2), ElemX(3), ElemX(4), ElemX(5)),
       Vector(ElemX("A"), ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E"))
+    )
+  }
+
+  it should "loc(1::2,List(...))" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val columnNames = List("id", "word", "date")
+    val df = FrameX(ll, columnNames)
+    import com.framex.`implicit`.IndexOps.IntOps
+    val x = df.loc(1 :: 2, List("id", "word"))
+    x.columnMap shouldEqual Map("id" -> 0, "word" -> 1)
+    x.data shouldEqual Vector(
+      Vector(ElemX(2), ElemX(3)),
+      Vector(ElemX("B"), ElemX("C"))
     )
   }
 

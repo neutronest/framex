@@ -14,12 +14,12 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
 
   def tail(n: Int = 5) = data.map(c => c.slice(c.size - n, c.size))
 
-  def :: = 0 to data.size
+  def :: = 0 to data(0).size
 
   def loc(index: Range, columns: List[String]): FrameX = {
     val d: Vector[Vector[ElemX]] = columns.map { c =>
       columnMap.get(c) match {
-        case Some(columnIdx) => data(columnIdx)
+        case Some(columnIdx) => data(columnIdx).slice(index.start, index.end + 1) //note that contrary to usual python slices, both the start and the stop are included!
         case None => throw new Exception("out of size")
       }
     }
