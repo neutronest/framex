@@ -56,14 +56,14 @@ class TestFrameX extends FlatSpec with Matchers {
   }
 
   it should "return tail" in {
-    val ll = List(List(1, 2, 3, 4, 5),
-      List("A", "B", "C", "D", "E"),
-      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val ll = List(List(1, 2, 3, 4, 5, 6),
+      List("A", "B", "C", "D", "E", "F"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12", "2019-02-12"))
     val columnNames = List("id", "word", "date")
     FrameX(ll, columnNames).tail() shouldBe Vector(
-      Vector(ElemX(2), ElemX(3), ElemX(4), ElemX(5)),
-      Vector(ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E")),
-      Vector(ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
+      Vector(ElemX(2), ElemX(3), ElemX(4), ElemX(5), ElemX(6)),
+      Vector(ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E"), ElemX("F")),
+      Vector(ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"), ElemX("2019-02-12"))
     )
   }
 
@@ -94,22 +94,22 @@ class TestFrameX extends FlatSpec with Matchers {
     )
   }
 
-//  "Performance test" should "cost small time" in {
-//
-//    var ll : List[List[Int]] = (for {
-//      ix <- 1 to 1000000
-//    } yield (1 to 100).toList).toList
-//    val df = FrameX.fromList(ll)
-//
-//  }
-//  "write csv" should "OK" in {
-//    var ll : List[List[Int]] = (for {
-//          ix <- 1 to 1000000
-//        } yield (1 to 100).toList).toList
-//    val f = new File("out.csv")
-//    val writer = CSVWriter.open(f)
-//    writer.writeAll(ll)
-//    writer.close()
-//  }
+  //  "Performance test" should "cost small time" in {
+  //
+  //    var ll : List[List[Int]] = (for {
+  //      ix <- 1 to 1000000
+  //    } yield (1 to 100).toList).toList
+  //    val df = FrameX.fromList(ll)
+  //
+  //  }
+  //  "write csv" should "OK" in {
+  //    var ll : List[List[Int]] = (for {
+  //          ix <- 1 to 1000000
+  //        } yield (1 to 100).toList).toList
+  //    val f = new File("out.csv")
+  //    val writer = CSVWriter.open(f)
+  //    writer.writeAll(ll)
+  //    writer.close()
+  //  }
 
 }

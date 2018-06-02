@@ -12,9 +12,7 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
 
   def head = data.map(_.head)
 
-  def tail() = data.map(_.tail)
-
-  def tail(n: Int) = data.map(c => c.slice(c.size - n, c.size))
+  def tail(n: Int = 5) = data.map(c => c.slice(c.size - n, c.size))
 
   def :: = 0 to data.size
 
