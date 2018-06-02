@@ -52,8 +52,7 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val columnNames = List("id", "word", "date")
-    val df = FrameX(ll, columnNames)
-    df.head shouldEqual Vector(ElemX(1), ElemX("A"), ElemX("2015-01-10"))
+    FrameX(ll, columnNames).head shouldEqual Vector(ElemX(1), ElemX("A"), ElemX("2015-01-10"))
   }
 
   it should "return tail" in {
@@ -61,8 +60,7 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val columnNames = List("id", "word", "date")
-    val df = FrameX(ll, columnNames)
-    df.tail() shouldBe Vector(
+    FrameX(ll, columnNames).tail() shouldBe Vector(
       Vector(ElemX(2), ElemX(3), ElemX(4), ElemX(5)),
       Vector(ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E")),
       Vector(ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
@@ -74,12 +72,25 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val columnNames = List("id", "word", "date")
-    val df = FrameX(ll, columnNames)
-    val xs = df.tail(3)
-    xs shouldBe Vector(
+    FrameX(ll, columnNames).tail(3) shouldBe Vector(
       Vector(ElemX(3), ElemX(4), ElemX(5)),
       Vector(ElemX("C"), ElemX("D"), ElemX("E")),
       Vector(ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
+    )
+  }
+
+  it should "loc" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val columnNames = List("id", "word", "date")
+    val df = FrameX(ll, columnNames)
+    import df.::
+    val x = df.loc(::, List("id", "word"))
+    x.columnMap shouldEqual Map("id" -> 0, "word" -> 1)
+    x.data shouldEqual Vector(
+      Vector(ElemX(1), ElemX(2), ElemX(3), ElemX(4), ElemX(5)),
+      Vector(ElemX("A"), ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E"))
     )
   }
 

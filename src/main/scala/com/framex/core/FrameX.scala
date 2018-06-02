@@ -16,6 +16,19 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
 
   def tail(n: Int) = data.map(c => c.slice(c.size - n, c.size))
 
+  def :: = 0 to data.size
+
+  def loc(index: Range, columns: List[String]): FrameX = {
+    val d: Vector[Vector[ElemX]] = columns.map { c =>
+      columnMap.get(c) match {
+        case Some(columnIdx) => data(columnIdx)
+        case None => throw new Exception("out of size")
+      }
+    }
+      .toVector
+    FrameX(d, columns)
+  }
+
   def ndim = 2
 
   def apply(rowIdx: Int): FrameX = {
@@ -67,8 +80,23 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
 }
 
 object FrameX {
-  def apply(data_ : Vector[Vector[ElemX]])(implicit elemCT: ClassTag[Vector[ElemX]]): FrameX = {
-    new FrameX(data_)
+
+  def apply(data: Vector[Vector[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
+    val lenOfCol = data.map(_.size)
+    if (lenOfCol.distinct.size != 1) {
+      throw new Exception("COLUMNS' SIZE MUST SAME!")
+    }
+    new FrameX(data.map(_.map(ElemX.wrapper)))
+  }
+
+  def apply(data: Vector[Vector[_]], columns: List[String])(implicit ct: ClassTag[ElemX]): FrameX = {
+    if (data.size != columns.size) {
+      throw new Exception("column_names' size is not equal to real data size")
+    }
+
+    val x = FrameX(data)
+    x.columnMap = columns.zipWithIndex.toMap
+    x
   }
 
   def apply(data_ : Vector[ElemX]): FrameX = {
@@ -83,7 +111,7 @@ object FrameX {
     if (lenOfCol.distinct.size != 1) {
       throw new Exception("COLUMNS' SIZE MUST SAME!")
     }
-    FrameX(ll.map(l => l.map(ElemX.wrapper).toVector).toVector)
+    FrameX(ll.map(_.toVector).toVector)
   }
 
   def apply(ll: List[List[_]], columns: List[String]): FrameX = {

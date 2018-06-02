@@ -23,6 +23,7 @@ object ElemX {
   def wrapper(data: Any): ElemX = {
 
     data match {
+      case ele: ElemX => ele
       case item: Int => ElemX(item.asInstanceOf[Int])
       case item: Double => ElemX(item.asInstanceOf[Double])
       case item: String => ElemX(item.asInstanceOf[String])
