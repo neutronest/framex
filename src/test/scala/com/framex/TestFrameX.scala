@@ -10,7 +10,7 @@ class TestFrameX extends FlatSpec with Matchers {
     var ll = List(List(1, 2, 3, 4, 5),
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
-    val df = FrameX.fromList(ll)
+    val df = FrameX(ll)
     df.data.foreach(f => f.foreach(
       f2 => println(f2.elem)
     ))
@@ -18,12 +18,12 @@ class TestFrameX extends FlatSpec with Matchers {
     val ll2 = List(List(3), List("C"), List("2016-03-03"))
     val ll24 = List(List(3, 4, 5), List("C", "D", "E"), List("2016-03-03", "2011-02-02", "2017-02-12"))
     val df2 = df(2)
-    df(2).equals(FrameX.fromList(ll2)) shouldEqual true
-    df(2, 4).equals(FrameX.fromList(ll24)) shouldEqual true
+    df(2).equals(FrameX(ll2)) shouldEqual true
+    df(2, 4).equals(FrameX(ll24)) shouldEqual true
 
     val badLL = List(List(1, 2, 3), List("C", "D"))
     val thrown = intercept[Exception] {
-      FrameX.fromList(badLL)
+      FrameX(badLL)
     }
     thrown.getMessage shouldEqual ("COLUMNS' SIZE MUST SAME!")
 
@@ -33,7 +33,7 @@ class TestFrameX extends FlatSpec with Matchers {
     val ll = List(List(1, 2, 3, 4, 5),
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
-    val df = FrameX.fromList(ll)
+    val df = FrameX(ll)
     df.shape().equals((5, 3)) shouldEqual true
   }
 
@@ -42,9 +42,9 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val columnNames = List("id", "word", "date")
-    val df = FrameX.fromList(ll, columnNames)
+    val df = FrameX(ll, columnNames)
     df("date").data.foreach(f => f.foreach(f2 => println(f2.elem)))
-    df("date").equals(FrameX.fromList(List(List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12")))) shouldEqual (true)
+    df("date").equals(FrameX(List(List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12")))) shouldEqual (true)
   }
 
   it should "return head" in {
@@ -52,7 +52,7 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val columnNames = List("id", "word", "date")
-    val df = FrameX.fromList(ll, columnNames)
+    val df = FrameX(ll, columnNames)
     df.head shouldEqual Vector(ElemX(1), ElemX("A"), ElemX("2015-01-10"))
   }
 
@@ -61,7 +61,7 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val columnNames = List("id", "word", "date")
-    val df = FrameX.fromList(ll, columnNames)
+    val df = FrameX(ll, columnNames)
     df.tail() shouldBe Vector(
       Vector(ElemX(2), ElemX(3), ElemX(4), ElemX(5)),
       Vector(ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E")),
@@ -74,7 +74,7 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val columnNames = List("id", "word", "date")
-    val df = FrameX.fromList(ll, columnNames)
+    val df = FrameX(ll, columnNames)
     val xs = df.tail(3)
     xs shouldBe Vector(
       Vector(ElemX(3), ElemX(4), ElemX(5)),
