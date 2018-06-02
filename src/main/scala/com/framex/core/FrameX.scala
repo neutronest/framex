@@ -27,6 +27,15 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
     FrameX(d, columns)
   }
 
+  def loc(index: Range, columnName: String): FrameX = {
+    columnMap.get(columnName) match {
+      case Some(columnIdx) =>
+        val series: Vector[ElemX] = data(columnIdx).slice(index.start, index.end + 1) //note that contrary to usual python slices, both the start and the stop are included!
+        new FrameX(Vector(series))
+      case None => throw new Exception("out of size")
+    }
+  }
+
   def ndim = 2
 
   def apply(rowIdx: Int): FrameX = {
@@ -43,16 +52,6 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
       row ++= Vector(seq.slice(rowFrom, rowTo))
     })
     new FrameX(row.toVector)
-  }
-
-  def apply(columnName: String): FrameX = {
-    columnMap.get(columnName) match {
-      case Some(columnIdx) => {
-        val series: Vector[ElemX] = data(columnIdx)
-        new FrameX(Vector(series))
-      }
-      case None => throw new Exception("out of size")
-    }
   }
 
   def sameElements(that: FrameX): Boolean = {

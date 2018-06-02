@@ -37,16 +37,6 @@ class TestFrameX extends FlatSpec with Matchers {
     df.shape().equals((5, 3)) shouldEqual true
   }
 
-  it should "test column name" in {
-    val ll = List(List(1, 2, 3, 4, 5),
-      List("A", "B", "C", "D", "E"),
-      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
-    val columnNames = List("id", "word", "date")
-    val df = FrameX(ll, columnNames)
-    df("date").data.foreach(f => f.foreach(f2 => println(f2.elem)))
-    df("date").equals(FrameX(List(List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12")))) shouldEqual (true)
-  }
-
   it should "return head" in {
     val ll = List(List(1, 2, 3, 4, 5),
       List("A", "B", "C", "D", "E"),
@@ -106,6 +96,30 @@ class TestFrameX extends FlatSpec with Matchers {
     x.data shouldEqual Vector(
       Vector(ElemX(2), ElemX(3)),
       Vector(ElemX("B"), ElemX("C"))
+    )
+  }
+
+  it should "loc(::,.)" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val columnNames = List("id", "word", "date")
+    val df = FrameX(ll, columnNames)
+    import df.::
+    df.loc(::, "date").data.foreach(f => f.foreach(f2 => println(f2.elem)))
+    df.loc(::, "date").equals(FrameX(List(List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12")))) shouldEqual (true)
+  }
+
+  it should "loc(1::3,.)" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val columnNames = List("id", "word", "date")
+    val df = FrameX(ll, columnNames)
+    import com.framex.`implicit`.IndexOps.IntOps
+    val x = df.loc(1 :: 3, "date")
+    x.data shouldEqual Vector(
+      Vector(ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"))
     )
   }
 
