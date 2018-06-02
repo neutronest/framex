@@ -1,7 +1,7 @@
 package com.framex
 
 import org.scalatest._
-import com.framex.core.FrameX
+import com.framex.core.{ElemX, FrameX}
 
 class TestFrameX extends FlatSpec with Matchers {
 
@@ -15,15 +15,17 @@ class TestFrameX extends FlatSpec with Matchers {
       f2 => println(f2.elem)
     ))
 
-    val ll2 = List(List(3) ,List("C"), List("2016-03-03"))
-    val ll24 = List(List(3 , 4, 5), List("C", "D", "E"), List("2016-03-03","2011-02-02", "2017-02-12"))
+    val ll2 = List(List(3), List("C"), List("2016-03-03"))
+    val ll24 = List(List(3, 4, 5), List("C", "D", "E"), List("2016-03-03", "2011-02-02", "2017-02-12"))
     val df2 = df(2)
     df(2).equals(FrameX.fromList(ll2)) shouldEqual true
     df(2, 4).equals(FrameX.fromList(ll24)) shouldEqual true
 
-    val badLL = List(List(1,2,3), List("C", "D"))
-    val thrown = intercept[Exception] {FrameX.fromList(badLL)}
-    thrown.getMessage shouldEqual("COLUMNS' SIZE MUST SAME!")
+    val badLL = List(List(1, 2, 3), List("C", "D"))
+    val thrown = intercept[Exception] {
+      FrameX.fromList(badLL)
+    }
+    thrown.getMessage shouldEqual ("COLUMNS' SIZE MUST SAME!")
 
   }
 
@@ -42,7 +44,43 @@ class TestFrameX extends FlatSpec with Matchers {
     val columnNames = List("id", "word", "date")
     val df = FrameX.fromList(ll, columnNames)
     df("date").data.foreach(f => f.foreach(f2 => println(f2.elem)))
-    df("date").equals(FrameX.fromList(List(List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12")))) shouldEqual(true)
+    df("date").equals(FrameX.fromList(List(List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12")))) shouldEqual (true)
+  }
+
+  it should "return head" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val columnNames = List("id", "word", "date")
+    val df = FrameX.fromList(ll, columnNames)
+    df.head shouldEqual Vector(ElemX(1), ElemX("A"), ElemX("2015-01-10"))
+  }
+
+  it should "return tail" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val columnNames = List("id", "word", "date")
+    val df = FrameX.fromList(ll, columnNames)
+    df.tail() shouldBe Vector(
+      Vector(ElemX(2), ElemX(3), ElemX(4), ElemX(5)),
+      Vector(ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E")),
+      Vector(ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
+    )
+  }
+
+  it should "return tail n" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val columnNames = List("id", "word", "date")
+    val df = FrameX.fromList(ll, columnNames)
+    val xs = df.tail(3)
+    xs shouldBe Vector(
+      Vector(ElemX(3), ElemX(4), ElemX(5)),
+      Vector(ElemX("C"), ElemX("D"), ElemX("E")),
+      Vector(ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
+    )
   }
 
 //  "Performance test" should "cost small time" in {
