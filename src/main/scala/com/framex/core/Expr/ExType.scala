@@ -1,3 +1,8 @@
+
+/*
+ * Copyright (c) 2018.
+ */
+
 package com.framex.core.Expr
 
 sealed trait ExType
@@ -10,34 +15,12 @@ case object None extends ExType {
     }
   }
 }
-case class ExInt(x: Int) extends ExType {
-//  override def equals(obj: Any): Boolean = {
-//    obj match {
-//      case ExInt(y) => x == y
-//      case _ => false
-//    }
-//  }
-}
-case class ExDouble(x: Double) extends ExType {
-//  override def equals(obj: Any): Boolean = {
-//    obj match {
-//      case ExDouble(y) => math.abs(x - y) < 0.000000001
-//      case _ => false
-//    }
-//  }
-}
-case class ExString(x: String) extends ExType {
-//  override def equals(obj: Any): Boolean = {
-//    obj match {
-//      case ExString(y) => x.equals(y)
-//      case _ => false
-//    }
-//  }
-}
-case class ExCategory(x: List[String]) extends ExType {
-  override def equals(obj: Any): Boolean = ???
-}
-case class ExOther(x: Any) extends ExType
+case class ExInt(x: Int) extends ExType {}
+case class ExDouble(x: Double) extends ExType {}
+case class ExString(x: String) extends ExType {}
+case class ExChar(x: Char) extends ExType {}
+case class ExCategory(x: List[String]) extends ExType {}
+case class ExOther(x: Any) extends ExType {}
 
 object ExType {
 
@@ -46,6 +29,7 @@ object ExType {
       case x: Int => ExInt(x)
       case x: Double => ExDouble (x)
       case x: String => ExString (x)
+      case x: Char => ExChar (x)
       case _ => None
     }
   }

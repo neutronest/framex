@@ -1,3 +1,8 @@
+
+/*
+ * Copyright (c) 2018.
+ */
+
 package com.framex.core
 
 import com.framex.core.Expr._
@@ -27,6 +32,7 @@ object ElemX {
       case item: Int => ElemX(item.asInstanceOf[Int])
       case item: Double => ElemX(item.asInstanceOf[Double])
       case item: String => ElemX(item.asInstanceOf[String])
+      case item: Char => ElemX(item.asInstanceOf[Char])
       case _ => ElemX(None)
     }
   }

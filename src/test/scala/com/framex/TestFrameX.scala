@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018.
+ */
+
 package com.framex
 
 import org.scalatest._
@@ -29,7 +33,7 @@ class TestFrameX extends FlatSpec with Matchers {
 
   }
 
-  it should "shape" in {
+  it should "get shape (row, col)" in {
     val ll = List(List(1, 2, 3, 4, 5),
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
@@ -38,11 +42,35 @@ class TestFrameX extends FlatSpec with Matchers {
   }
 
   it should "return head" in {
-    val ll = List(List(1, 2, 3, 4, 5),
-      List("A", "B", "C", "D", "E"),
-      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
-    val columnNames = List("id", "word", "date")
-    FrameX(ll, columnNames).head shouldEqual Vector(ElemX(1), ElemX("A"), ElemX("2015-01-10"))
+
+    val ll = List(List.range(1, 27),
+      List.range('a', '{'))
+    val columnNames = List("id", "word")
+    FrameX(ll, columnNames).head() shouldBe FrameX(
+      List(
+        List(1,2,3,4,5),
+        List('a', 'b', 'c', 'd', 'e')
+      )
+    )
+  }
+
+  it should "return head n" in {
+    val ll = List(List.range(1, 27),
+      List.range('a', '{'))
+    val columnNames = List("id", "word")
+    FrameX(ll, columnNames).head(3) shouldBe FrameX(
+      List(
+        List(1,2,3),
+        List('a', 'b', 'c')
+      )
+    )
+  }
+
+  it should "return head not overflow" in {
+    val ll = List(List.range(1, 6),
+      List.range('a', 'f'))
+    val columnNames = List("id", "word")
+    FrameX(ll, columnNames).head(10) shouldBe FrameX(ll)
   }
 
   it should "return tail" in {
@@ -50,10 +78,13 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E", "F"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12", "2019-02-12"))
     val columnNames = List("id", "word", "date")
-    FrameX(ll, columnNames).tail() shouldBe Vector(
-      Vector(ElemX(2), ElemX(3), ElemX(4), ElemX(5), ElemX(6)),
-      Vector(ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E"), ElemX("F")),
-      Vector(ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"), ElemX("2019-02-12"))
+    FrameX(ll, columnNames).tail() shouldBe FrameX(
+      Vector
+      (
+        Vector(ElemX(2), ElemX(3), ElemX(4), ElemX(5), ElemX(6)),
+        Vector(ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E"), ElemX("F")),
+        Vector(ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"), ElemX("2019-02-12"))
+      )
     )
   }
 
@@ -62,10 +93,27 @@ class TestFrameX extends FlatSpec with Matchers {
       List("A", "B", "C", "D", "E"),
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val columnNames = List("id", "word", "date")
-    FrameX(ll, columnNames).tail(3) shouldBe Vector(
-      Vector(ElemX(3), ElemX(4), ElemX(5)),
-      Vector(ElemX("C"), ElemX("D"), ElemX("E")),
-      Vector(ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
+    FrameX(ll, columnNames).tail(3) shouldBe FrameX(
+      Vector(
+        Vector(ElemX(3), ElemX(4), ElemX(5)),
+        Vector(ElemX("C"), ElemX("D"), ElemX("E")),
+        Vector(ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
+      )
+    )
+  }
+
+  it should "return tail not overflow" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
+    val columnNames = List("id", "word", "date")
+    FrameX(ll, columnNames).tail(10) shouldBe FrameX(
+      Vector
+      (
+        Vector(ElemX(1), ElemX(2), ElemX(3), ElemX(4), ElemX(5)),
+        Vector(ElemX("A"), ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E")),
+        Vector(ElemX("2015-01-10"), ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
+      )
     )
   }
 

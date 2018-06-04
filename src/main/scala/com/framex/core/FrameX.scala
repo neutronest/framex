@@ -1,3 +1,8 @@
+
+/*
+ * Copyright (c) 2018.
+ */
+
 package com.framex.core
 
 import scala.collection.mutable.ListBuffer
@@ -10,9 +15,9 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
     (data(0).size, data.size)
   }
 
-  def head = data.map(_.head)
+  def head(n: Int = 5) : FrameX  = FrameX(data.map(c => c.slice(0, n)))
 
-  def tail(n: Int = 5) = data.map(c => c.slice(c.size - n, c.size))
+  def tail(n: Int = 5) : FrameX = FrameX(data.map(c => c.slice(c.size - n, c.size)))
 
   def :: = 0 to data(0).size
 
@@ -70,10 +75,12 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
     !thisEachCol.hasNext && !thatEachCol.hasNext
   }
 
-  override def equals(obj: scala.Any): Boolean = obj match {
+  override def equals(obj: Any): Boolean = obj match {
     case that: FrameX => this sameElements that
     case _ => false
   }
+
+  override def hashCode(): Int = super.hashCode()
 }
 
 object FrameX {
