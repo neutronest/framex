@@ -11,6 +11,10 @@ import scala.reflect.runtime.{universe => ru}
 
 class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = Map()) {
 
+  def columnNames = {
+    this.columnMap.toSeq.sortWith(_._2 < _._2).map(_._1).toList
+  }
+
   def shape(): (Int, Int) = {
     (data(0).size, data.size)
   }
@@ -57,6 +61,38 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
       row ++= Vector(seq.slice(rowFrom, rowTo))
     })
     new FrameX(row.toVector)
+  }
+
+  def prettyPrint() : Unit = {
+
+    val columnWidths: ListBuffer[Int] = new ListBuffer[Int]
+    List.range(0, this.data.length).map(colIdx => {
+      val col = this.data(colIdx)
+      val rowDataMaxLength = col.map(x => x.elem.toString.length).max
+      columnWidths.append(math.max(rowDataMaxLength, columnNames(colIdx).length))
+    })
+
+    val sb : StringBuilder = new StringBuilder()
+    // print header
+    for ( i <- 0 to this.data.length-1) {
+      sb.append(" | ")
+      sb.append(columnNames(i) + " " * (columnWidths(i)  - columnNames(i).length))
+    }
+    val allLength = sb.length
+    sb.append("\n")
+    sb.append("-" * allLength + "\n")
+
+    val dfHead = this.head()
+    for (rowNum <- 0 to dfHead.data(0).length-1) {
+
+      val rowData = dfHead.data.map{_(rowNum)}
+      for ( (elemX, idx) <- rowData.view.zipWithIndex) {
+        sb.append(" | ")
+        sb.append(elemX.elem.toString + " " * (columnWidths(idx) - elemX.elem.toString.length ))
+      }
+      sb.append("\n")
+    }
+    sb.toString().split("\n").foreach(println)
   }
 
   def sameElements(that: FrameX): Boolean = {
@@ -108,7 +144,7 @@ object FrameX {
     new FrameX(newFrame :+ data_)
   }
 
-  def getTypeTag[T: ru.TypeTag](obj: T) = ru.typeTag[T]
+//  def getTypeTag[T: ru.TypeTag](obj: T) = ru.typeTag[T]
 
   def apply(ll: List[List[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
     val lenOfCol = ll.map(_.size)
