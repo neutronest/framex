@@ -71,14 +71,13 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
       columnWidths(colIdx) = col.map(x => x.elem.toString.length).max
     })
 
-    var sb : StringBuilder = new StringBuilder()
-    var allLength = 0
+    val sb : StringBuilder = new StringBuilder()
     // print header
     for ( i <- 0 to this.data.length-1) {
       sb.append(" | ")
       sb.append(columnNames(i) + " " * (columnWidths(i)  - columnNames(i).length))
     }
-    allLength = sb.length
+    val allLength = sb.length
     sb.append("\n")
     sb.append("-" * allLength + "\n")
 
