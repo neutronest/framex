@@ -65,10 +65,11 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
 
   def prettyPrint() : Unit = {
 
-    var columnWidths: ListBuffer[Int] = columnNames.map(_.length + 2).to[ListBuffer]
+    val columnWidths: ListBuffer[Int] = new ListBuffer[Int]
     List.range(0, this.data.length).map(colIdx => {
       val col = this.data(colIdx)
-      columnWidths(colIdx) = col.map(x => x.elem.toString.length).max
+      val rowDataMaxLength = col.map(x => x.elem.toString.length).max
+      columnWidths.append(math.max(rowDataMaxLength, columnNames(colIdx).length))
     })
 
     val sb : StringBuilder = new StringBuilder()
