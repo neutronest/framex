@@ -19,9 +19,9 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
     (data(0).size, data.size)
   }
 
-  def head(n: Int = 5) : FrameX  = FrameX(data.map(c => c.slice(0, n)))
+  def head(n: Int = 5) : FrameX  = FrameX(data.map(c => c.slice(0, n)), this.columnNames)
 
-  def tail(n: Int = 5) : FrameX = FrameX(data.map(c => c.slice(c.size - n, c.size)))
+  def tail(n: Int = 5) : FrameX = FrameX(data.map(c => c.slice(c.size - n, c.size)), this.columnNames)
 
   def :: = 0 to data(0).size
 
@@ -96,6 +96,11 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
   }
 
   def sameElements(that: FrameX): Boolean = {
+
+    if (this.columnMap != that.columnMap) {
+      return false
+    }
+
     val thisEachCol = this.data.iterator
     val thatEachCol = that.data.iterator
     while (thisEachCol.hasNext && thatEachCol.hasNext) {
