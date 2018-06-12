@@ -5,6 +5,9 @@
 
 package com.framex.core
 
+import com.framex.utils.FrameErrorMessages
+
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -19,7 +22,10 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
     (data(0).size, data.size)
   }
 
+  def ndim = 2
+
   def head(n: Int = 5) : FrameX  = FrameX(data.map(c => c.slice(0, n)), this.columnNames)
+
 
   def tail(n: Int = 5) : FrameX = FrameX(data.map(c => c.slice(c.size - n, c.size)), this.columnNames)
 
@@ -28,8 +34,9 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
   def loc(index: Range, columns: List[String]): FrameX = {
     val d: Vector[Vector[ElemX]] = columns.map { c =>
       columnMap.get(c) match {
-        case Some(columnIdx) => data(columnIdx).slice(index.start, index.end + 1) //note that contrary to usual python slices, both the start and the stop are included!
-        case None => throw new Exception("out of size")
+        //note that contrary to usual python slices, both the start and the stop are included!
+        case Some(columnIdx) => data(columnIdx).slice(index.start, index.end + 1)
+        case None => throw new Exception(FrameErrorMessages.INDEX_OUT_OF_SIZE)
       }
     }
       .toVector
@@ -39,13 +46,13 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
   def loc(index: Range, columnName: String): FrameX = {
     columnMap.get(columnName) match {
       case Some(columnIdx) =>
-        val series: Vector[ElemX] = data(columnIdx).slice(index.start, index.end + 1) //note that contrary to usual python slices, both the start and the stop are included!
+        //note that contrary to usual python slices, both the start and the stop are included!
+        val series: Vector[ElemX] = data(columnIdx).slice(index.start, index.end + 1)
         new FrameX(Vector(series))
-      case None => throw new Exception("out of size")
+      case None => throw new Exception(FrameErrorMessages.INDEX_OUT_OF_SIZE)
     }
   }
 
-  def ndim = 2
 
   def apply(rowIdx: Int): FrameX = {
     val row = new ListBuffer[Vector[ElemX]]()
@@ -61,6 +68,36 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
       row ++= Vector(seq.slice(rowFrom, rowTo))
     })
     new FrameX(row.toVector)
+  }
+
+  def append(that: FrameX): FrameX = {
+    if (this.columnMap != that.columnMap) {
+      throw new Exception(FrameErrorMessages.COLUMN_NAMES_MISMATCH)
+    }
+
+    FrameX(this.data.zip(that.data).map(x => x._1 ++ x._2), this.columnNames)
+  }
+
+
+
+  def groupBy(columnNames: List[String]): Option[GroupByFrameX] = {
+
+    val groupbyData : Map[Vector[ElemX], FrameX] = Map[Vector[ElemX], FrameX]()
+    val columnIndexs : List[Int] = columnNames.flatMap(this.columnMap.get)
+    var dataMap = mutable.Map[String, FrameX]()
+    // TODO
+    val foobarMap = this.data.transpose.groupBy(record => (columnIndexs.map(record(_))).toString())
+
+
+    this.data.transpose.groupBy( (record: Vector[ElemX]) => (columnIndexs.map(record(_))).toString())
+      .foreach(kv => dataMap += (kv._1 -> FrameX(kv._2.transpose, this.columnNames))
+      )
+    Some(new GroupByFrameX(dataMap))
+  }
+
+  def groupBy(columnName: String) : Option[GroupByFrameX] = {
+
+    this.groupBy(List(columnName));
   }
 
   def prettyPrint() : Unit = {
@@ -129,14 +166,14 @@ object FrameX {
   def apply(data: Vector[Vector[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
     val lenOfCol = data.map(_.size)
     if (lenOfCol.distinct.size != 1) {
-      throw new Exception("COLUMNS' SIZE MUST SAME!")
+      throw new Exception(FrameErrorMessages.COLUMN_SIZE_MISMATCH)
     }
     new FrameX(data.map(_.map(ElemX.wrapper)))
   }
 
   def apply(data: Vector[Vector[_]], columns: List[String])(implicit ct: ClassTag[ElemX]): FrameX = {
     if (data.size != columns.size) {
-      throw new Exception("column_names' size is not equal to real data size")
+      throw new Exception(FrameErrorMessages.COLUMN_SIZE_MISMATCH)
     }
 
     val x = FrameX(data)

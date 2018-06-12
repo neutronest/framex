@@ -13,6 +13,8 @@ class ElemX(var elem: ExType) {
     case that: ElemX => this.elem.equals(that.elem)
     case _ => false
   }
+
+  override def toString = s"ElemX(" + elem.toString + ")"
 }
 
 object ElemX {
