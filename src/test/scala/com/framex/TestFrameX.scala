@@ -51,7 +51,7 @@ class TestFrameX extends FlatSpec with Matchers {
       List(
         List(1,2,3,4,5),
         List('a', 'b', 'c', 'd', 'e')
-      )
+      ), columnNames
     )
   }
 
@@ -63,7 +63,8 @@ class TestFrameX extends FlatSpec with Matchers {
       List(
         List(1,2,3),
         List('a', 'b', 'c')
-      )
+      ),
+      columnNames
     )
   }
 
@@ -71,7 +72,7 @@ class TestFrameX extends FlatSpec with Matchers {
     val ll = List(List.range(1, 6),
       List.range('a', 'f'))
     val columnNames = List("id", "word")
-    FrameX(ll, columnNames).head(10) shouldBe FrameX(ll)
+    FrameX(ll, columnNames).head(10) shouldBe FrameX(ll, columnNames)
   }
 
   it should "return tail" in {
@@ -85,7 +86,8 @@ class TestFrameX extends FlatSpec with Matchers {
         Vector(ElemX(2), ElemX(3), ElemX(4), ElemX(5), ElemX(6)),
         Vector(ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E"), ElemX("F")),
         Vector(ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"), ElemX("2019-02-12"))
-      )
+      ),
+      columnNames
     )
   }
 
@@ -99,7 +101,17 @@ class TestFrameX extends FlatSpec with Matchers {
         Vector(ElemX(3), ElemX(4), ElemX(5)),
         Vector(ElemX("C"), ElemX("D"), ElemX("E")),
         Vector(ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
-      )
+      ),
+      columnNames
+    )
+
+    FrameX(ll, columnNames).tail(1) shouldBe FrameX(
+      Vector(
+        Vector(ElemX(5)),
+        Vector(ElemX("E")),
+        Vector(ElemX("2017-02-12"))
+      ),
+      columnNames
     )
   }
 
@@ -114,7 +126,8 @@ class TestFrameX extends FlatSpec with Matchers {
         Vector(ElemX(1), ElemX(2), ElemX(3), ElemX(4), ElemX(5)),
         Vector(ElemX("A"), ElemX("B"), ElemX("C"), ElemX("D"), ElemX("E")),
         Vector(ElemX("2015-01-10"), ElemX("2017-08-22"), ElemX("2016-03-03"), ElemX("2011-02-02"), ElemX("2017-02-12"))
-      )
+      ),
+      columnNames
     )
   }
 
@@ -183,6 +196,19 @@ class TestFrameX extends FlatSpec with Matchers {
     df.prettyPrint()
 
     true shouldEqual(true)
+  }
+
+  it should "FrameX with different columnName / columnIndex should not equal" in {
+    val ll = List(List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"),
+      List("Tom", "Axiba Warning", "Dong Chao", "Zhang zhi hao", "zzz"),
+      List("Man", "Woman", "Woman", "Man", "Man"))
+    val columnNames1 = List("id", "word", "date", "name", "gender")
+    val columnNames2 = List("id", "words", "date", "names", "man/woman")
+    val columnNames3 = List("id", "word", "name", "date", "gender")
+    (FrameX(ll, columnNames1) != FrameX(ll, columnNames2)) shouldEqual(true)
+    (FrameX(ll, columnNames1) != FrameX(ll, columnNames3)) shouldEqual(true)
   }
 
   //  "Performance test" should "cost small time" in {
