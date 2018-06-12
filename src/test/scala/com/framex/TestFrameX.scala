@@ -104,6 +104,15 @@ class TestFrameX extends FlatSpec with Matchers {
       ),
       columnNames
     )
+
+    FrameX(ll, columnNames).tail(1) shouldBe FrameX(
+      Vector(
+        Vector(ElemX(5)),
+        Vector(ElemX("E")),
+        Vector(ElemX("2017-02-12"))
+      ),
+      columnNames
+    )
   }
 
   it should "return tail not overflow" in {
