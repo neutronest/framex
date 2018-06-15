@@ -16,10 +16,6 @@ class TestFrameX extends FlatSpec with Matchers {
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"))
     val df = FrameX(ll)
 
-    //    df.data.foreach(f => f.foreach(
-    //      f2 => println(f2.elem)
-    //    ))
-
     val ll2 = List(List(3), List("C"), List("2016-03-03"))
     val ll24 = List(List(3, 4, 5), List("C", "D", "E"), List("2016-03-03", "2011-02-02", "2017-02-12"))
     val df2 = df(2)
@@ -209,6 +205,101 @@ class TestFrameX extends FlatSpec with Matchers {
     val columnNames3 = List("id", "word", "name", "date", "gender")
     (FrameX(ll, columnNames1) != FrameX(ll, columnNames2)) shouldEqual(true)
     (FrameX(ll, columnNames1) != FrameX(ll, columnNames3)) shouldEqual(true)
+  }
+
+
+  it should "append new frameX to existed frameX" in {
+
+    val ll = List(
+      List(1, 2, 3, 4, 5),
+      List("A", "B", "C", "D", "E"),
+      List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"),
+      List("Tom", "Axiba Warning", "Dong Chao", "Zhang zhi hao", "zzz"),
+      List("Man", "Woman", "Woman", "Man", "Man"))
+
+    val existedLL = List(
+      List(1, 2, 3),
+      List("A", "B", "C"),
+      List("2015-01-10", "2017-08-22", "2016-03-03"),
+      List("Tom", "Axiba Warning", "Dong Chao"),
+      List("Man", "Woman", "Woman"))
+
+    val appendedLL = List(
+      List(4, 5),
+      List("D", "E"),
+      List("2011-02-02", "2017-02-12"),
+      List( "Zhang zhi hao", "zzz"),
+      List("Man", "Man")
+    )
+    val columnNames = List("id", "word", "date", "name" , "gender")
+
+    val existedDf = FrameX(existedLL, columnNames)
+    val appendedDf = FrameX(appendedLL, columnNames)
+    val df = FrameX(ll, columnNames)
+    val calcuatedDf = existedDf.append(appendedDf)
+    calcuatedDf.equals(df) shouldEqual(true)
+  }
+
+  it should "groupBy one column" in {
+    val ll = List(
+      List(1, 1, 2, 2),
+      List(1, 2, 3, 4),
+      List(0.36, 0.22, 1.26, -0.56)
+    )
+    val columnNames = List("A", "B", "C")
+    val df = FrameX(ll, columnNames)
+    val testDataMap : Map[String, FrameX] = Map(
+      List(ElemX(1)).toString() -> FrameX(List(
+        List(1, 1),
+        List(1, 2),
+        List(0.36, 0.22)
+      ), columnNames),
+      List(ElemX(2)).toString() -> FrameX(List(
+        List(2, 2),
+        List(3, 4),
+        List(1.26, -0.56)
+      ), columnNames)
+    )
+    df.groupBy("A") match {
+      case None => false shouldEqual(true)
+      case Some(groupByObj) => {
+        groupByObj.dataMap.equals(testDataMap) shouldEqual(true)
+      }
+    }
+  }
+
+  it should "groupBy multi columns" in {
+    val ll = List(
+      List(1,1,2,2,3,4,5),
+      List(1,1,2,2,3,4,5),
+      List('a', 'b', 'c', 'd', 'e', 'f', 'g')
+    )
+    val columnNames = List("a", "b", "c")
+    val testedDataMap : Map[String, FrameX] = Map(
+      List(ElemX(1), ElemX(1)).toString() -> FrameX(List(
+        List(1, 1), List(1, 1), List('a', 'b')
+      ), columnNames),
+      List(ElemX(4), ElemX(4)).toString() -> FrameX(List(
+        List(4), List(4), List('f')
+      ), columnNames),
+      List(ElemX(3), ElemX(3)).toString() -> FrameX(List(
+        List(3), List(3), List('e')
+      ), columnNames),
+      List(ElemX(2), ElemX(2)).toString() -> FrameX(List(
+        List(2, 2), List(2, 2), List('c', 'd')
+      ), columnNames),
+      List(ElemX(5), ElemX(5)).toString() -> FrameX(List(
+        List(5), List(5), List('g')
+      ), columnNames)
+    )
+
+    val df = FrameX(ll, columnNames)
+    df.groupBy(List("a", "b")) match {
+      case None => false shouldEqual(true)
+      case Some(groupByObj) => {
+        groupByObj.dataMap.equals(testedDataMap) shouldEqual(true)
+      }
+    }
   }
 
   //  "Performance test" should "cost small time" in {
