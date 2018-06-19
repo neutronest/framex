@@ -8,7 +8,9 @@ import scala.collection.mutable
 
 class GroupByFrameX(var dataMap: mutable.Map[String, FrameX]) {
 
-//  def agg(fn: String): GroupByFrameX = ???
+  var aggNames = List()
+
+  def agg(fn: String): GroupByFrameX = ???
 //
 //  def agg(fns: List[String]) : GroupByFrameX = ???
 }
