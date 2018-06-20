@@ -15,6 +15,27 @@ class ElemX(var elem: ExType) {
     case _ => false
   }
 
+  def / (that: ElemX) : ElemX = {
+    (this.elem, that.elem) match {
+      case (ExInt(e1), ExInt(e2)) => ElemX(e1 / e2)
+      case (ExDouble(e1), ExDouble(e2)) => ElemX(e1 / e2)
+      case (ExInt(e1), ExDouble(e2)) => ElemX(e1.toDouble / e2)
+      case (ExDouble(e1), ExInt(e2)) => ElemX(e1 / e2.toDouble)
+
+      case (_, _) => throw new Exception(FrameErrorMessages.ILLEGAL_OPERATE_TYPE)
+    }
+  }
+
+  def abs : ElemX = {
+    this.elem match {
+      case ExInt(e1) => ElemX(ExInt(e1.abs))
+      case ExDouble(e2) => ElemX(ExDouble(e2.abs))
+      case _ => throw new Exception(FrameErrorMessages.ILLEGAL_OPERATE_TYPE)
+    }
+  }
+
+
+
   override def toString = s"ElemX(" + elem.toString + ")"
 }
 
@@ -45,6 +66,9 @@ object ElemX {
       (x.elem, y.elem) match {
         case (ExInt(e1), ExInt(e2)) => ElemX(e1 + e2)
         case (ExDouble(e1), ExDouble(e2)) => ElemX(e1 + e2)
+        case (ExInt(e1), ExDouble(e2)) => ElemX(e1.toDouble + e2)
+        case (ExDouble(e1), ExInt(e2)) => ElemX(e1 + e2.toDouble)
+
         case (_, _) => throw new Exception(FrameErrorMessages.ILLEGAL_OPERATE_TYPE)
       }
     }
@@ -53,6 +77,8 @@ object ElemX {
       (x.elem, y.elem) match {
         case (ExInt(e1), ExInt(e2)) => ElemX(e1 - e2)
         case (ExDouble(e1), ExDouble(e2)) => ElemX(e1 - e2)
+        case (ExInt(e1), ExDouble(e2)) => ElemX(e1.toDouble - e2)
+        case (ExDouble(e1), ExInt(e2)) => ElemX(e1 - e2.toDouble)
         case (_, _) => throw new Exception(FrameErrorMessages.ILLEGAL_OPERATE_TYPE)
       }
     }
@@ -61,6 +87,8 @@ object ElemX {
       (x.elem, y.elem) match {
         case (ExInt(e1), ExInt(e2)) => ElemX(e1 * e2)
         case (ExDouble(e1), ExDouble(e2)) => ElemX(e1 * e2)
+        case (ExInt(e1), ExDouble(e2)) => ElemX(e1.toDouble * e2)
+        case (ExDouble(e1), ExInt(e2)) => ElemX(e1 * e2.toDouble)
         case (_, _) => throw new Exception(FrameErrorMessages.ILLEGAL_OPERATE_TYPE)
       }
     }

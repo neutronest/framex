@@ -5,7 +5,7 @@
 package com.framex
 
 import com.framex.core.ElemX
-import com.framex.core.Expr.{ ExInt}
+import com.framex.core.Expr.{ExDouble, ExInt}
 import org.scalatest.{FlatSpec, Matchers}
 
 class TestElemX extends FlatSpec with Matchers {
@@ -53,5 +53,40 @@ class TestElemX extends FlatSpec with Matchers {
     )
     vec.max.equals(ElemX(ExInt(3))) shouldEqual(true)
     vec.min.equals(ElemX(ExInt(1))) shouldEqual(true)
+  }
+
+  it should "Vector[ElemX] get median" in  {
+
+    import com.framex.`implicit`.VectorElemXOps._
+
+    val vec = Vector[ElemX](
+      ElemX(ExInt(1)),
+      ElemX(ExInt(2)),
+      ElemX(ExInt(3)),
+      ElemX(ExInt(3)),
+      ElemX(ExInt(3)),
+      ElemX(ExInt(4)),
+      ElemX(ExInt(5)),
+      ElemX(ExInt(6)),
+      ElemX(ExInt(6))
+    )
+    vec.median().equals(ElemX(ExInt(3))) shouldEqual(true)
+  }
+
+  it should "Vector[ElemX] get average" in {
+    import com.framex.`implicit`.VectorElemXOps._
+
+    val vec = Vector[ElemX](
+      ElemX(ExInt(1)),
+      ElemX(ExInt(2)),
+      ElemX(ExInt(3)),
+      ElemX(ExInt(3)),
+      ElemX(ExInt(3)),
+      ElemX(ExInt(4)),
+      ElemX(ExInt(5)),
+      ElemX(ExInt(6)),
+      ElemX(ExInt(6))
+    )
+    (vec.average() - ElemX(ExDouble(3.6666666666666665))).abs < ElemX(ExDouble(0.000001)) shouldEqual(true)
   }
 }
