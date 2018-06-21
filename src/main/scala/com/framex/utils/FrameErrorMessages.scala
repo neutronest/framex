@@ -14,5 +14,7 @@ object FrameErrorMessages {
 
   val INDEX_OUT_OF_SIZE = "index is out of size"
 
+  val ILLEGAL_OPERATE_TYPE = "illegal type for this operator"
+
 
 }
