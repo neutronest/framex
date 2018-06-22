@@ -73,6 +73,16 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
     new FrameX(row.toVector)
   }
 
+//  def apply(columnName: String) : FrameX = {
+//    columnMap.get(columnName) match {
+//      case None => throw new Exception("")
+//      case Some(columnIndex) => {
+//        FrameX(this.data(columnIndex), columnNames=List(columnName))
+//      }
+//    }
+//  }
+
+
   def append(that: FrameX): FrameX = {
     if (this.columnMap != that.columnMap) {
       throw new Exception(FrameErrorMessages.COLUMN_NAMES_MISMATCH)

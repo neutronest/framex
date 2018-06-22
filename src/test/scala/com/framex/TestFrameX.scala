@@ -341,7 +341,28 @@ class TestFrameX extends FlatSpec with Matchers {
       Vector(ElemX(ExDouble(1.2799999999999998))),
       Vector(ElemX(ExDouble(1.26)))
     )) shouldEqual(true)
+  }
 
+  it should "agg multiple different functions for each column" in {
+    import com.framex.stats.Stats._
+    val ll = List(
+      List(1, 1, 2, 2),
+      List(1, 2, 3, 4),
+      List(0.36, 0.22, 1.26, -0.56)
+    )
+    val columnNames = List("A", "B", "C")
+    val df = FrameX(ll, columnNames)
+    val dfAgg = df.agg(Map(("A" -> List("sum")),
+      ("B" -> List("max", "min")),
+      ("C" -> List("sum", "max", "min"))))
+    dfAgg.data.equals(Vector(
+      Vector(ElemX(ExInt(6))),
+      Vector(ElemX(ExInt(4))),
+      Vector(ElemX(ExInt(1))),
+      Vector(ElemX(ExDouble(1.2799999999999998))),
+      Vector(ElemX(ExDouble(1.26))),
+      Vector(ElemX(ExDouble(-0.56)))
+    ))
   }
 
   //  "Performance test" should "cost small time" in {

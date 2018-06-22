@@ -14,9 +14,6 @@ object Stats {
 
   implicit class FrameStats(var df: FrameX)  {
 
-//    var aggMap = mutable.Map[String, Map[String, Int]]()
-//    var aggData = Vector(Vector[ElemX]())
-
     def agg(op: String) : FrameX = {
 
       var data = Vector[Vector[ElemX]]()
@@ -54,8 +51,37 @@ object Stats {
       dfAgg
     }
 
+    def agg(opMap: Map[String, List[String]]) : FrameX = {
+      var data = Vector[Vector[ElemX]]()
+      var aggMap = mutable.Map[String, Map[String, Int]]()
+      var aggNames = List[String]()
+      var columnIndexAcc = 0
+      opMap.foreach(kv => {
+        val (columnName, opNames) = (kv._1, kv._2)
+        var eachMapforColumn = Map[String, Int]()
+        df.columnMap.get(columnName) match  {
+          case None => throw new Exception(FrameErrorMessages.COLUMN_NAMES_NOT_FOUND)
+          case Some(columnIndex) => {
+            val columnData = df.data(columnIndex)
+            opNames.foreach(opName => {
+              val vectorDataApplyByOp = Vector(getBasicStatsOp(opName).apply(columnData))
+              eachMapforColumn += (opName -> columnIndexAcc)
+              columnIndexAcc += 1
+              data :+= vectorDataApplyByOp
+            })
+          }
+        }
+        aggMap += (columnName -> eachMapforColumn)
+
+      })
+      val dfAgg = FrameX(data)
+      dfAgg.aggMap = aggMap
+      dfAgg
+    }
 
     def getBasicStatsOp(op: String) : (Vector[ElemX] => ElemX) = {
+
+      import com.framex.`implicit`.VectorElemXOps._
 
       op match {
         case "max" => {
@@ -67,20 +93,17 @@ object Stats {
         case "sum" => {
           data: Vector[ElemX] => data.sum
         }
+        case "mean" => {
+          data: Vector[ElemX] => data.average()
+        }
+        case "median" => {
+          data: Vector[ElemX] => data.median()
+        }
         case _ => {
           throw new Exception(FrameErrorMessages.ILLEGAL_OPERATE_TYPE)
         }
       }
-
     }
-
-//    def statsOps(op: String) : FrameX = {
-//      op match {
-//        case "min" => {
-//
-//        }
-//      }
-//    }
   }
 }
 
