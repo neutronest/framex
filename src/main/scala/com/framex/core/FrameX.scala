@@ -14,6 +14,9 @@ import scala.reflect.runtime.{universe => ru}
 
 class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = Map()) {
 
+  // used in FrameStats!
+  var aggMap = mutable.Map[String, Map[String, Int]]()
+
   def columnNames = {
     this.columnMap.toSeq.sortWith(_._2 < _._2).map(_._1).toList
   }
@@ -185,8 +188,6 @@ object FrameX {
     val newFrame = Vector()
     new FrameX(newFrame :+ data_)
   }
-
-//  def getTypeTag[T: ru.TypeTag](obj: T) = ru.typeTag[T]
 
   def apply(ll: List[List[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
     val lenOfCol = ll.map(_.size)

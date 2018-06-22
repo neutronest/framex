@@ -16,5 +16,4 @@ object FrameErrorMessages {
 
   val ILLEGAL_OPERATE_TYPE = "illegal type for this operator"
 
-
 }
