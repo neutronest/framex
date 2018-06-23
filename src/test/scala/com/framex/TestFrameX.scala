@@ -8,6 +8,8 @@ import com.framex.core.Expr.{ExDouble, ExInt}
 import org.scalatest._
 import com.framex.core.{ElemX, FrameX}
 
+import scala.collection.mutable
+
 class TestFrameX extends FlatSpec with Matchers {
 
   it should "init FrameX from two dimensional list" in {
@@ -363,6 +365,71 @@ class TestFrameX extends FlatSpec with Matchers {
       Vector(ElemX(ExDouble(1.26))),
       Vector(ElemX(ExDouble(-0.56)))
     ))
+  }
+
+  it should "agg functions after groupBy FrameX" in {
+    val ll = List(
+      List(1, 1, 2, 2),
+      List(1, 2, 3, 4),
+      List(0.36, 0.22, 1.26, -0.56)
+    )
+    val columnNames = List("A", "B", "C")
+    val df = FrameX(ll, columnNames)
+    val testDataMap : Map[String, FrameX] = Map(
+      List(ElemX(1)).toString() -> FrameX(List(
+        List(1, 1),
+        List(1, 2),
+        List(0.36, 0.22)
+      ), columnNames),
+      List(ElemX(2)).toString() -> FrameX(List(
+        List(2, 2),
+        List(3, 4),
+        List(1.26, -0.56)
+      ), columnNames)
+    )
+
+    val frameAfterGroupByA1 = FrameX( List(List(2), List(3), List(0.58)))
+    frameAfterGroupByA1.aggMap = mutable.Map(
+      ("A" -> Map(
+        ("sum" -> 0))
+        ),
+      ("B" -> Map(
+        ("sum" -> 1))
+        ),
+      ("C" -> Map(
+        ("sum" -> 2))
+        )
+    )
+
+    val frameAfterGroupByA2 = FrameX( List(List(4), List(7), List(0.7)))
+    frameAfterGroupByA2.aggMap = mutable.Map(
+      ("A" -> Map(
+        ("sum" -> 0))
+        ),
+      ("B" -> Map(
+        ("sum" -> 1))
+        ),
+      ("C" -> Map(
+        ("sum" -> 2))
+        )
+    )
+
+    val res = df.groupBy("A")
+      .map( dfGroupByA => dfGroupByA.agg("sum"))
+    print(res)
+
+    df.groupBy("A") match {
+      case None => true shouldEqual(false)
+      case Some(dfGroupByA) => {
+        dfGroupByA.agg("sum").dataMap.equals(Map(
+          (List(ElemX(1)).toString() -> frameAfterGroupByA1),
+          (List(ElemX(2)).toString() -> frameAfterGroupByA2)
+        )) shouldEqual(true)
+      }
+    }
+
+    print("ok")
+
   }
 
   //  "Performance test" should "cost small time" in {

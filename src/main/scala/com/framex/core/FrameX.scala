@@ -150,6 +150,9 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
     if (this.columnMap != that.columnMap) {
       return false
     }
+    if (this.aggMap != that.aggMap) {
+      return false
+    }
 
     val thisEachCol = this.data.iterator
     val thatEachCol = that.data.iterator

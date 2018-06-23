@@ -8,27 +8,19 @@ import scala.collection.mutable
 
 class GroupByFrameX(var dataMap: mutable.Map[String, FrameX]) {
 
-//  var aggNames = List()
-//
-//  def agg(fn: String): GroupByFrameX = {
-//    fn match {
-//      case "min" => {
-//
-//        this.dataMap.foreach(kv => {
-//          val minData: Vector[ElemX] = kv._2.data.map(columnData => columnData.min)
-//          FrameX(minData.map(value => Vector(value)),
-//            columns = kv._2.columnNames.map(columnTitle => columnTitle + "-min")
-//          )
-//        })
-//      }
-//    }
-//  }
-//
-//  def agg(fns: List[String]) : GroupByFrameX = ???
+  import com.framex.stats.Stats._
+  def agg(opName: String) : GroupByFrameX = {
+    new GroupByFrameX(dataMap.map(kv => (kv._1 -> kv._2.agg(opName))))
+  }
+
+  def agg(opNames: List[String]) : GroupByFrameX = {
+    new GroupByFrameX(dataMap.map(kv => (kv._1 -> kv._2.agg(opNames))))
+  }
+
+  def agg(opDict: Map[String, List[String]]) : GroupByFrameX = {
+    new GroupByFrameX(dataMap.map(kv => (kv._1 -> kv._2.agg(opDict))))
+  }
 }
 
 object GroupByFrameX {
-
-
-
 }
