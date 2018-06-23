@@ -7,44 +7,43 @@ package com.framex.stats
 import com.framex.core.{ElemX, FrameX}
 import com.framex.utils.FrameErrorMessages
 
-import scala.collection.{immutable, mutable}
-
 object Stats {
 
   implicit class FrameStats(var df: FrameX) {
 
     def agg(op: String): FrameX = {
-
-      var data = Vector[Vector[ElemX]]()
-      var aggMap = Map[String, Map[String, Int]]()
-      data = df.data.map(columnData => {
+      val data = df.data.map(columnData => {
         Vector(getBasicStatsOp(op).apply(columnData))
       })
-      df.columnMap.foreach(kv => {
-        var itemMap = Map[String, Int]()
-        itemMap += (op -> kv._2)
-        aggMap += (kv._1 -> itemMap)
-      })
+      val aggMap = {
+        for {
+          kv <- df.columnMap
+        } yield {
+          kv._1 -> (op -> kv._2)
+        }
+      }.mapValues(Map(_))
       val dfAgg = FrameX(data)
       dfAgg.aggMap = aggMap
       dfAgg
     }
 
     def agg(ops: List[String]): FrameX = {
-      var data = Vector[Vector[ElemX]]()
-      var aggMap = Map[String, Map[String, Int]]()
-      data = df.data.map(columnData => {
+      val data = df.data.flatMap(columnData => {
         ops.map(op => Vector(getBasicStatsOp(op).apply(columnData))).toVector
-      }).flatten
-      var columnIndex = 0
-      df.columnMap.foreach(kv => {
-        var itemMap = Map[String, Int]()
-        ops.foreach(op => {
-          itemMap += (op -> columnIndex)
-          columnIndex += 1
-        })
-        aggMap += (kv._1 -> itemMap)
       })
+      var columnIndex = 1
+      val aggMap = for {
+        kv <- df.columnMap
+      } yield {
+        kv._1 -> {
+          for {
+            op <- ops
+          } yield {
+            columnIndex += 1
+            op -> columnIndex
+          }
+        }.toMap
+      }
       val dfAgg = FrameX(data)
       dfAgg.aggMap = aggMap
       dfAgg
