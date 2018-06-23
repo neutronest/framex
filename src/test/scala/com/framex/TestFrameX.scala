@@ -389,7 +389,7 @@ class TestFrameX extends FlatSpec with Matchers {
     )
 
     val frameAfterGroupByA1 = FrameX( List(List(2), List(3), List(0.58)))
-    frameAfterGroupByA1.aggMap = mutable.Map(
+    frameAfterGroupByA1.aggMap = Map(
       ("A" -> Map(
         ("sum" -> 0))
         ),
@@ -402,7 +402,7 @@ class TestFrameX extends FlatSpec with Matchers {
     )
 
     val frameAfterGroupByA2 = FrameX( List(List(4), List(7), List(0.7)))
-    frameAfterGroupByA2.aggMap = mutable.Map(
+    frameAfterGroupByA2.aggMap = Map(
       ("A" -> Map(
         ("sum" -> 0))
         ),

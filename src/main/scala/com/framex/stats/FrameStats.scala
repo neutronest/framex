@@ -7,21 +7,20 @@ package com.framex.stats
 import com.framex.core.{ElemX, FrameX}
 import com.framex.utils.FrameErrorMessages
 
-import scala.collection.mutable
-import scala.reflect.internal.util.Collections
+import scala.collection.{immutable, mutable}
 
 object Stats {
 
-  implicit class FrameStats(var df: FrameX)  {
+  implicit class FrameStats(var df: FrameX) {
 
-    def agg(op: String) : FrameX = {
+    def agg(op: String): FrameX = {
 
       var data = Vector[Vector[ElemX]]()
-      var aggMap = mutable.Map[String, Map[String, Int]]()
-      data = df.data.map( columnData => {
+      var aggMap = Map[String, Map[String, Int]]()
+      data = df.data.map(columnData => {
         Vector(getBasicStatsOp(op).apply(columnData))
       })
-      df.columnMap.foreach( kv => {
+      df.columnMap.foreach(kv => {
         var itemMap = Map[String, Int]()
         itemMap += (op -> kv._2)
         aggMap += (kv._1 -> itemMap)
@@ -33,12 +32,12 @@ object Stats {
 
     def agg(ops: List[String]): FrameX = {
       var data = Vector[Vector[ElemX]]()
-      var aggMap = mutable.Map[String, Map[String, Int]]()
-      data = df.data.map( columnData => {
+      var aggMap = Map[String, Map[String, Int]]()
+      data = df.data.map(columnData => {
         ops.map(op => Vector(getBasicStatsOp(op).apply(columnData))).toVector
       }).flatten
       var columnIndex = 0
-      df.columnMap.foreach( kv => {
+      df.columnMap.foreach(kv => {
         var itemMap = Map[String, Int]()
         ops.foreach(op => {
           itemMap += (op -> columnIndex)
@@ -51,41 +50,42 @@ object Stats {
       dfAgg
     }
 
-    def agg(opMap: Map[String, List[String]]) : FrameX = {
-      var data = Vector[Vector[ElemX]]()
-      var aggMap = mutable.Map[String, Map[String, Int]]()
-      var aggNames = List[String]()
-      var columnIndexAcc = 0
-      opMap.foreach(kv => {
-        val (columnName, opNames) = (kv._1, kv._2)
-        var eachMapforColumn = Map[String, Int]()
-        df.columnMap.get(columnName) match  {
-          case None => throw new Exception(FrameErrorMessages.COLUMN_NAMES_NOT_FOUND)
-          case Some(columnIndex) => {
-            val columnData = df.data(columnIndex)
-            opNames.foreach(opName => {
-              val vectorDataApplyByOp = Vector(getBasicStatsOp(opName).apply(columnData))
-              eachMapforColumn += (opName -> columnIndexAcc)
-              columnIndexAcc += 1
-              data :+= vectorDataApplyByOp
-            })
+    def agg(opMap: Map[String, List[String]]): FrameX = {
+      var columnIndexAcc = 1
+      val iterable = {
+        for {
+          (columnName, opNames) <- opMap
+        } yield {
+          val list = df.columnMap.get(columnName) match {
+            case None => throw new RuntimeException(FrameErrorMessages.COLUMN_NAMES_NOT_FOUND)
+            case Some(columnIndex) => {
+              val columnData = df.data(columnIndex)
+              for {
+                opName <- opNames
+              } yield {
+                val vectorDataApplyByOp = Vector(getBasicStatsOp(opName).apply(columnData))
+                columnIndexAcc += 1
+                (vectorDataApplyByOp, columnName -> (opName -> columnIndexAcc))
+              }
+            }
           }
+          list
         }
-        aggMap += (columnName -> eachMapforColumn)
-
-      })
+      }.flatten
+      val data: Vector[Vector[ElemX]] = iterable.map(_._1).toVector
+      val map = iterable.map(_._2).toMap.mapValues(Map(_))
       val dfAgg = FrameX(data)
-      dfAgg.aggMap = aggMap
+      dfAgg.aggMap = map
       dfAgg
     }
 
-    def getBasicStatsOp(op: String) : (Vector[ElemX] => ElemX) = {
+    def getBasicStatsOp(op: String): (Vector[ElemX] => ElemX) = {
 
       import com.framex.`implicit`.VectorElemXOps._
 
       op match {
         case "max" => {
-          data : Vector[ElemX] => data.max
+          data: Vector[ElemX] => data.max
         }
         case "min" => {
           data: Vector[ElemX] => data.min
@@ -105,5 +105,6 @@ object Stats {
       }
     }
   }
+
 }
 
