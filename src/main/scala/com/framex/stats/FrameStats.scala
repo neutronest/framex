@@ -7,6 +7,8 @@ package com.framex.stats
 import com.framex.core.{ElemX, FrameX}
 import com.framex.utils.FrameErrorMessages
 
+import scala.collection.immutable
+
 object Stats {
 
   implicit class FrameStats(var df: FrameX) {
@@ -50,7 +52,7 @@ object Stats {
     }
 
     def agg(opMap: Map[String, List[String]]): FrameX = {
-      var columnIndexAcc = 1
+      var columnIndexAcc = 0
       val iterable = {
         for {
           (columnName, opNames) <- opMap
@@ -63,8 +65,9 @@ object Stats {
                 opName <- opNames
               } yield {
                 val vectorDataApplyByOp = Vector(getBasicStatsOp(opName).apply(columnData))
+                val tmp = (vectorDataApplyByOp, columnName -> (opName -> columnIndexAcc))
                 columnIndexAcc += 1
-                (vectorDataApplyByOp, columnName -> (opName -> columnIndexAcc))
+                tmp
               }
             }
           }
@@ -72,9 +75,13 @@ object Stats {
         }
       }.flatten
       val data: Vector[Vector[ElemX]] = iterable.map(_._1).toVector
-      val map = iterable.map(_._2).toMap.mapValues(Map(_))
+
+      val aggMap: Map[String, Map[String, Int]] = iterable.map(_._2).groupBy(_._1).map {
+        case (col, list) =>
+          col -> list.map(_._2).toMap
+      }
       val dfAgg = FrameX(data)
-      dfAgg.aggMap = map
+      dfAgg.aggMap = aggMap
       dfAgg
     }
 
