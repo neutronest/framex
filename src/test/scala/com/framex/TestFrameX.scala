@@ -414,10 +414,6 @@ class TestFrameX extends FlatSpec with Matchers {
         )
     )
 
-    val res = df.groupBy("A")
-      .map( dfGroupByA => dfGroupByA.agg("sum"))
-    print(res)
-
     df.groupBy("A") match {
       case None => true shouldEqual(false)
       case Some(dfGroupByA) => {
@@ -427,9 +423,6 @@ class TestFrameX extends FlatSpec with Matchers {
         )) shouldEqual(true)
       }
     }
-
-    print("ok")
-
   }
 
   //  "Performance test" should "cost small time" in {
