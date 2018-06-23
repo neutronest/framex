@@ -323,6 +323,7 @@ class TestFrameX extends FlatSpec with Matchers {
       Vector(ElemX(ExDouble(1.2799999999999998)))
 
     )) shouldEqual (true)
+    dfAgg.aggMap shouldEqual Map("A" -> Map("sum" -> 0), "C" -> Map("sum" -> 2), "B" -> Map("sum" -> 1))
   }
 
   it should "agg multiple functions for all column" in {
@@ -343,6 +344,7 @@ class TestFrameX extends FlatSpec with Matchers {
       Vector(ElemX(ExDouble(1.2799999999999998))),
       Vector(ElemX(ExDouble(1.26)))
     )) shouldEqual (true)
+    dfAgg.aggMap shouldEqual Map("A" -> Map("sum" -> 0, "max" -> 1), "C" -> Map("sum" -> 4, "max" -> 5), "B" -> Map("sum" -> 2, "max" -> 3))
   }
 
   it should "agg multiple different functions for each column" in {

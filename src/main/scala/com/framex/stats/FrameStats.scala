@@ -7,8 +7,6 @@ package com.framex.stats
 import com.framex.core.{ElemX, FrameX}
 import com.framex.utils.FrameErrorMessages
 
-import scala.collection.immutable
-
 object Stats {
 
   implicit class FrameStats(var df: FrameX) {
@@ -33,7 +31,7 @@ object Stats {
       val data = df.data.flatMap(columnData => {
         ops.map(op => Vector(getBasicStatsOp(op).apply(columnData))).toVector
       })
-      var columnIndex = 1
+      var columnIndex = 0
       val aggMap = for {
         kv <- df.columnMap
       } yield {
@@ -41,8 +39,9 @@ object Stats {
           for {
             op <- ops
           } yield {
+            val tmp = op -> columnIndex
             columnIndex += 1
-            op -> columnIndex
+            tmp
           }
         }.toMap
       }
