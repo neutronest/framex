@@ -10,9 +10,11 @@ import com.framex.utils.FrameErrorMessages
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
-import scala.reflect.runtime.{universe => ru}
 
-class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = Map()) {
+class FrameX(val data: Vector[Vector[ElemX]], val columnMap: Map[String, Int] = Map()) {
+
+  // used in FrameStats!
+  var aggMap = Map[String, Map[String, Int]]()
 
   def columnNames = {
     this.columnMap.toSeq.sortWith(_._2 < _._2).map(_._1).toList
@@ -24,10 +26,10 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
 
   def ndim = 2
 
-  def head(n: Int = 5) : FrameX  = FrameX(data.map(c => c.slice(0, n)), this.columnNames)
+  def head(n: Int = 5): FrameX = FrameX(data.map(c => c.slice(0, n)), this.columnNames)
 
 
-  def tail(n: Int = 5) : FrameX = FrameX(data.map(c => c.slice(c.size - n, c.size)), this.columnNames)
+  def tail(n: Int = 5): FrameX = FrameX(data.map(c => c.slice(c.size - n, c.size)), this.columnNames)
 
   def :: = 0 to data(0).size
 
@@ -70,6 +72,16 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
     new FrameX(row.toVector)
   }
 
+  //  def apply(columnName: String) : FrameX = {
+  //    columnMap.get(columnName) match {
+  //      case None => throw new Exception("")
+  //      case Some(columnIndex) => {
+  //        FrameX(this.data(columnIndex), columnNames=List(columnName))
+  //      }
+  //    }
+  //  }
+
+
   def append(that: FrameX): FrameX = {
     if (this.columnMap != that.columnMap) {
       throw new Exception(FrameErrorMessages.COLUMN_NAMES_MISMATCH)
@@ -79,28 +91,26 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
   }
 
 
-
   def groupBy(columnNames: List[String]): Option[GroupByFrameX] = {
 
-    val groupbyData : Map[Vector[ElemX], FrameX] = Map[Vector[ElemX], FrameX]()
-    val columnIndexs : List[Int] = columnNames.flatMap(this.columnMap.get)
+    val groupbyData: Map[Vector[ElemX], FrameX] = Map[Vector[ElemX], FrameX]()
+    val columnIndexs: List[Int] = columnNames.flatMap(this.columnMap.get)
     var dataMap = mutable.Map[String, FrameX]()
     // TODO
     val foobarMap = this.data.transpose.groupBy(record => (columnIndexs.map(record(_))).toString())
 
 
-    this.data.transpose.groupBy( (record: Vector[ElemX]) => (columnIndexs.map(record(_))).toString())
+    this.data.transpose.groupBy((record: Vector[ElemX]) => (columnIndexs.map(record(_))).toString())
       .foreach(kv => dataMap += (kv._1 -> FrameX(kv._2.transpose, this.columnNames))
       )
     Some(new GroupByFrameX(dataMap))
   }
 
-  def groupBy(columnName: String) : Option[GroupByFrameX] = {
-
-    this.groupBy(List(columnName));
+  def groupBy(columnName: String): Option[GroupByFrameX] = {
+    this.groupBy(List(columnName))
   }
 
-  def prettyPrint() : Unit = {
+  def prettyPrint(): Unit = {
 
     val columnWidths: ListBuffer[Int] = new ListBuffer[Int]
     List.range(0, this.data.length).map(colIdx => {
@@ -109,23 +119,25 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
       columnWidths.append(math.max(rowDataMaxLength, columnNames(colIdx).length))
     })
 
-    val sb : StringBuilder = new StringBuilder()
+    val sb: StringBuilder = new StringBuilder()
     // print header
-    for ( i <- 0 to this.data.length-1) {
+    for (i <- 0 to this.data.length - 1) {
       sb.append(" | ")
-      sb.append(columnNames(i) + " " * (columnWidths(i)  - columnNames(i).length))
+      sb.append(columnNames(i) + " " * (columnWidths(i) - columnNames(i).length))
     }
     val allLength = sb.length
     sb.append("\n")
     sb.append("-" * allLength + "\n")
 
     val dfHead = this.head()
-    for (rowNum <- 0 to dfHead.data(0).length-1) {
+    for (rowNum <- 0 to dfHead.data(0).length - 1) {
 
-      val rowData = dfHead.data.map{_(rowNum)}
-      for ( (elemX, idx) <- rowData.view.zipWithIndex) {
+      val rowData = dfHead.data.map {
+        _ (rowNum)
+      }
+      for ((elemX, idx) <- rowData.view.zipWithIndex) {
         sb.append(" | ")
-        sb.append(elemX.elem.toString + " " * (columnWidths(idx) - elemX.elem.toString.length ))
+        sb.append(elemX.elem.toString + " " * (columnWidths(idx) - elemX.elem.toString.length))
       }
       sb.append("\n")
     }
@@ -135,6 +147,9 @@ class FrameX(var data: Vector[Vector[ElemX]], var columnMap: Map[String, Int] = 
   def sameElements(that: FrameX): Boolean = {
 
     if (this.columnMap != that.columnMap) {
+      return false
+    }
+    if (this.aggMap != that.aggMap) {
       return false
     }
 
@@ -172,21 +187,17 @@ object FrameX {
   }
 
   def apply(data: Vector[Vector[_]], columns: List[String])(implicit ct: ClassTag[ElemX]): FrameX = {
-    if (data.size != columns.size) {
+    val lenOfCol = data.map(_.size)
+    if (lenOfCol.distinct.size != 1) {
       throw new Exception(FrameErrorMessages.COLUMN_SIZE_MISMATCH)
     }
-
-    val x = FrameX(data)
-    x.columnMap = columns.zipWithIndex.toMap
-    x
+    new FrameX(data.map(_.map(ElemX.wrapper)), columns.zipWithIndex.toMap)
   }
 
   def apply(data_ : Vector[ElemX]): FrameX = {
     val newFrame = Vector()
     new FrameX(newFrame :+ data_)
   }
-
-//  def getTypeTag[T: ru.TypeTag](obj: T) = ru.typeTag[T]
 
   def apply(ll: List[List[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
     val lenOfCol = ll.map(_.size)
@@ -197,11 +208,13 @@ object FrameX {
   }
 
   def apply(ll: List[List[_]], columns: List[String]): FrameX = {
+    val lenOfCol = ll.map(_.size)
+    if (lenOfCol.distinct.size != 1) {
+      throw new Exception("COLUMNS' SIZE MUST SAME!")
+    }
     if (ll.size != columns.size) {
       throw new Exception("column_names' size is not equal to real data size")
     }
-    val frameX = FrameX(ll)
-    frameX.columnMap = columns.zipWithIndex.toMap
-    frameX
+    FrameX(ll.map(_.toVector).toVector, columns)
   }
 }

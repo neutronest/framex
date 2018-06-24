@@ -4,8 +4,11 @@
 
 package com.framex
 
+import com.framex.core.Expr.{ExDouble, ExInt}
 import org.scalatest._
 import com.framex.core.{ElemX, FrameX}
+
+import scala.collection.mutable
 
 class TestFrameX extends FlatSpec with Matchers {
 
@@ -45,7 +48,7 @@ class TestFrameX extends FlatSpec with Matchers {
     val columnNames = List("id", "word")
     FrameX(ll, columnNames).head() shouldBe FrameX(
       List(
-        List(1,2,3,4,5),
+        List(1, 2, 3, 4, 5),
         List('a', 'b', 'c', 'd', 'e')
       ), columnNames
     )
@@ -57,7 +60,7 @@ class TestFrameX extends FlatSpec with Matchers {
     val columnNames = List("id", "word")
     FrameX(ll, columnNames).head(3) shouldBe FrameX(
       List(
-        List(1,2,3),
+        List(1, 2, 3),
         List('a', 'b', 'c')
       ),
       columnNames
@@ -187,11 +190,11 @@ class TestFrameX extends FlatSpec with Matchers {
       List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12"),
       List("Tom", "Axiba Warning", "Dong Chao", "Zhang zhi hao", "zzz"),
       List("Man", "Woman", "Woman", "Man", "Man"))
-    val columnNames = List("id", "word", "date", "name" , "gender")
+    val columnNames = List("id", "word", "date", "name", "gender")
     val df = FrameX(ll, columnNames)
     df.prettyPrint()
 
-    true shouldEqual(true)
+    true shouldEqual (true)
   }
 
   it should "FrameX with different columnName / columnIndex should not equal" in {
@@ -203,8 +206,8 @@ class TestFrameX extends FlatSpec with Matchers {
     val columnNames1 = List("id", "word", "date", "name", "gender")
     val columnNames2 = List("id", "words", "date", "names", "man/woman")
     val columnNames3 = List("id", "word", "name", "date", "gender")
-    (FrameX(ll, columnNames1) != FrameX(ll, columnNames2)) shouldEqual(true)
-    (FrameX(ll, columnNames1) != FrameX(ll, columnNames3)) shouldEqual(true)
+    (FrameX(ll, columnNames1) != FrameX(ll, columnNames2)) shouldEqual (true)
+    (FrameX(ll, columnNames1) != FrameX(ll, columnNames3)) shouldEqual (true)
   }
 
 
@@ -228,16 +231,16 @@ class TestFrameX extends FlatSpec with Matchers {
       List(4, 5),
       List("D", "E"),
       List("2011-02-02", "2017-02-12"),
-      List( "Zhang zhi hao", "zzz"),
+      List("Zhang zhi hao", "zzz"),
       List("Man", "Man")
     )
-    val columnNames = List("id", "word", "date", "name" , "gender")
+    val columnNames = List("id", "word", "date", "name", "gender")
 
     val existedDf = FrameX(existedLL, columnNames)
     val appendedDf = FrameX(appendedLL, columnNames)
     val df = FrameX(ll, columnNames)
     val calcuatedDf = existedDf.append(appendedDf)
-    calcuatedDf.equals(df) shouldEqual(true)
+    calcuatedDf.equals(df) shouldEqual (true)
   }
 
   it should "groupBy one column" in {
@@ -248,7 +251,7 @@ class TestFrameX extends FlatSpec with Matchers {
     )
     val columnNames = List("A", "B", "C")
     val df = FrameX(ll, columnNames)
-    val testDataMap : Map[String, FrameX] = Map(
+    val testDataMap: Map[String, FrameX] = Map(
       List(ElemX(1)).toString() -> FrameX(List(
         List(1, 1),
         List(1, 2),
@@ -261,21 +264,21 @@ class TestFrameX extends FlatSpec with Matchers {
       ), columnNames)
     )
     df.groupBy("A") match {
-      case None => false shouldEqual(true)
+      case None => false shouldEqual (true)
       case Some(groupByObj) => {
-        groupByObj.dataMap.equals(testDataMap) shouldEqual(true)
+        groupByObj.dataMap.equals(testDataMap) shouldEqual (true)
       }
     }
   }
 
   it should "groupBy multi columns" in {
     val ll = List(
-      List(1,1,2,2,3,4,5),
-      List(1,1,2,2,3,4,5),
+      List(1, 1, 2, 2, 3, 4, 5),
+      List(1, 1, 2, 2, 3, 4, 5),
       List('a', 'b', 'c', 'd', 'e', 'f', 'g')
     )
     val columnNames = List("a", "b", "c")
-    val testedDataMap : Map[String, FrameX] = Map(
+    val testedDataMap: Map[String, FrameX] = Map(
       List(ElemX(1), ElemX(1)).toString() -> FrameX(List(
         List(1, 1), List(1, 1), List('a', 'b')
       ), columnNames),
@@ -295,9 +298,132 @@ class TestFrameX extends FlatSpec with Matchers {
 
     val df = FrameX(ll, columnNames)
     df.groupBy(List("a", "b")) match {
-      case None => false shouldEqual(true)
+      case None => false shouldEqual (true)
       case Some(groupByObj) => {
-        groupByObj.dataMap.equals(testedDataMap) shouldEqual(true)
+        groupByObj.dataMap.equals(testedDataMap) shouldEqual (true)
+      }
+    }
+  }
+
+  it should "agg function for all column" in {
+
+    import com.framex.stats.Stats._
+
+    val ll = List(
+      List(1, 1, 2, 2),
+      List(1, 2, 3, 4),
+      List(0.36, 0.22, 1.26, -0.56)
+    )
+    val columnNames = List("A", "B", "C")
+    val df = FrameX(ll, columnNames)
+    val dfAgg = df.agg("sum")
+    dfAgg.data.equals(Vector(
+      Vector(ElemX(ExInt(6))),
+      Vector(ElemX(ExInt(10))),
+      Vector(ElemX(ExDouble(1.2799999999999998)))
+
+    )) shouldEqual (true)
+    dfAgg.aggMap shouldEqual Map("A" -> Map("sum" -> 0), "C" -> Map("sum" -> 2), "B" -> Map("sum" -> 1))
+  }
+
+  it should "agg multiple functions for all column" in {
+    import com.framex.stats.Stats._
+    val ll = List(
+      List(1, 1, 2, 2),
+      List(1, 2, 3, 4),
+      List(0.36, 0.22, 1.26, -0.56)
+    )
+    val columnNames = List("A", "B", "C")
+    val df = FrameX(ll, columnNames)
+    val dfAgg = df.agg(List("sum", "max"))
+    dfAgg.data.equals(Vector(
+      Vector(ElemX(ExInt(6))),
+      Vector(ElemX(ExInt(2))),
+      Vector(ElemX(ExInt(10))),
+      Vector(ElemX(ExInt(4))),
+      Vector(ElemX(ExDouble(1.2799999999999998))),
+      Vector(ElemX(ExDouble(1.26)))
+    )) shouldEqual (true)
+    dfAgg.aggMap shouldEqual Map("A" -> Map("sum" -> 0, "max" -> 1), "C" -> Map("sum" -> 4, "max" -> 5), "B" -> Map("sum" -> 2, "max" -> 3))
+  }
+
+  it should "agg multiple different functions for each column" in {
+    import com.framex.stats.Stats._
+    val ll = List(
+      List(1, 1, 2, 2),
+      List(1, 2, 3, 4),
+      List(0.36, 0.22, 1.26, -0.56)
+    )
+    val columnNames = List("A", "B", "C")
+    val df = FrameX(ll, columnNames)
+    val dfAgg = df.agg(Map(("A" -> List("sum")),
+      ("B" -> List("max", "min")),
+      ("C" -> List("sum", "max", "min"))))
+    dfAgg.data.equals(Vector(
+      Vector(ElemX(ExInt(6))),
+      Vector(ElemX(ExInt(4))),
+      Vector(ElemX(ExInt(1))),
+      Vector(ElemX(ExDouble(1.2799999999999998))),
+      Vector(ElemX(ExDouble(1.26))),
+      Vector(ElemX(ExDouble(-0.56)))
+    ))
+    dfAgg.aggMap shouldEqual Map("A" -> Map("sum" -> 0), "C" -> Map("sum" -> 3, "max" -> 4, "min" -> 5), "B" -> Map("max" -> 1, "min" -> 2))
+  }
+
+  it should "agg functions after groupBy FrameX" in {
+    val ll = List(
+      List(1, 1, 2, 2),
+      List(1, 2, 3, 4),
+      List(0.36, 0.22, 1.26, -0.56)
+    )
+    val columnNames = List("A", "B", "C")
+    val df = FrameX(ll, columnNames)
+    val testDataMap: Map[String, FrameX] = Map(
+      List(ElemX(1)).toString() -> FrameX(List(
+        List(1, 1),
+        List(1, 2),
+        List(0.36, 0.22)
+      ), columnNames),
+      List(ElemX(2)).toString() -> FrameX(List(
+        List(2, 2),
+        List(3, 4),
+        List(1.26, -0.56)
+      ), columnNames)
+    )
+
+    val frameAfterGroupByA1 = FrameX(List(List(2), List(3), List(0.58)))
+    frameAfterGroupByA1.aggMap = Map(
+      ("A" -> Map(
+        ("sum" -> 0))
+        ),
+      ("B" -> Map(
+        ("sum" -> 1))
+        ),
+      ("C" -> Map(
+        ("sum" -> 2))
+        )
+    )
+
+    val frameAfterGroupByA2 = FrameX(List(List(4), List(7), List(0.7)))
+    frameAfterGroupByA2.aggMap = Map(
+      ("A" -> Map(
+        ("sum" -> 0))
+        ),
+      ("B" -> Map(
+        ("sum" -> 1))
+        ),
+      ("C" -> Map(
+        ("sum" -> 2))
+        )
+    )
+
+    df.groupBy("A") match {
+      case None => true shouldEqual (false)
+      case Some(dfGroupByA) => {
+        dfGroupByA.agg("sum").dataMap.equals(Map(
+          (List(ElemX(1)).toString() -> frameAfterGroupByA1),
+          (List(ElemX(2)).toString() -> frameAfterGroupByA2)
+        )) shouldEqual (true)
       }
     }
   }

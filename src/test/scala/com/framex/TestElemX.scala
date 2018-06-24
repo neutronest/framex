@@ -74,6 +74,7 @@ class TestElemX extends FlatSpec with Matchers {
   }
 
   it should "Vector[ElemX] get average" in {
+
     import com.framex.`implicit`.VectorElemXOps._
 
     val vec = Vector[ElemX](
