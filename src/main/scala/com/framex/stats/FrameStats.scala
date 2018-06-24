@@ -11,15 +11,15 @@ object Stats {
 
   implicit class FrameStats(var df: FrameX) {
 
-    def agg(op: String): FrameX = {
+    def agg(opName: String): FrameX = {
       val data = df.data.map(columnData => {
-        Vector(getBasicStatsOp(op).apply(columnData))
+        Vector(getBasicStatsOp(opName).apply(columnData))
       })
       val aggMap = {
         for {
           kv <- df.columnMap
         } yield {
-          kv._1 -> (op -> kv._2)
+          kv._1 -> (opName -> kv._2)
         }
       }.mapValues(Map(_))
       val dfAgg = FrameX(data)
@@ -27,9 +27,9 @@ object Stats {
       dfAgg
     }
 
-    def agg(ops: List[String]): FrameX = {
+    def agg(opNames: List[String]): FrameX = {
       val data = df.data.flatMap(columnData => {
-        ops.map(op => Vector(getBasicStatsOp(op).apply(columnData))).toVector
+        opNames.map(op => Vector(getBasicStatsOp(op).apply(columnData))).toVector
       })
       var columnIndex = 0
       val aggMap = for {
@@ -37,9 +37,9 @@ object Stats {
       } yield {
         kv._1 -> {
           for {
-            op <- ops
+            opName <- opNames
           } yield {
-            val tmp = op -> columnIndex
+            val tmp = opName -> columnIndex
             columnIndex += 1
             tmp
           }
