@@ -428,6 +428,28 @@ class TestFrameX extends FlatSpec with Matchers {
     }
   }
 
+  it should "applyMap unary function to FrameX" in {
+
+    val n = implicitly[Numeric[ElemX]]
+    import n._
+
+    val ll = List(
+      List(1, 1, 2, 2),
+      List(1, 2, 3, 4),
+      List(0.36, 0.22, 1.26, -0.56)
+    )
+    val columnNames = List("A", "B", "C")
+    val df = FrameX(ll, columnNames)
+    val applyDoubleDf = df.applyMap(x => x * ElemX(ExInt(2)))
+    applyDoubleDf.equals(FrameX(
+      List(
+        List(2, 2, 4, 4),
+        List(2, 4, 6, 8),
+        List(0.72, 0.44, 2.52, -1.12)
+      ), List("A", "B", "C")
+    )) shouldEqual(true)
+  }
+
   //  "Performance test" should "cost small time" in {
   //
   //    var ll : List[List[Int]] = (for {

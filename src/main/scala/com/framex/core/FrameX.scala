@@ -96,9 +96,6 @@ class FrameX(val data: Vector[Vector[ElemX]], val columnMap: Map[String, Int] = 
     val groupbyData: Map[Vector[ElemX], FrameX] = Map[Vector[ElemX], FrameX]()
     val columnIndexs: List[Int] = columnNames.flatMap(this.columnMap.get)
     var dataMap = mutable.Map[String, FrameX]()
-    // TODO
-    val foobarMap = this.data.transpose.groupBy(record => (columnIndexs.map(record(_))).toString())
-
 
     this.data.transpose.groupBy((record: Vector[ElemX]) => (columnIndexs.map(record(_))).toString())
       .foreach(kv => dataMap += (kv._1 -> FrameX(kv._2.transpose, this.columnNames))
@@ -108,6 +105,15 @@ class FrameX(val data: Vector[Vector[ElemX]], val columnMap: Map[String, Int] = 
 
   def groupBy(columnName: String): Option[GroupByFrameX] = {
     this.groupBy(List(columnName))
+  }
+
+  def applyMap(fn : ElemX => ElemX) : FrameX = {
+
+    val applyMapData = this.data.map( columnData => {
+      columnData.map( elem => fn(elem))})
+    val applyMapFrame = FrameX(applyMapData, this.columnNames)
+    applyMapFrame.aggMap = this.aggMap
+    applyMapFrame
   }
 
   def prettyPrint(): Unit = {
