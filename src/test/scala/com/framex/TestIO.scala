@@ -21,7 +21,11 @@ class TestIO extends FlatSpec with Matchers {
         Vector(ElemX(ExDouble(2)), ElemX(ExDouble(4)))
       )
     )) shouldEqual(true)
+  }
 
-
+  it should "read from csv" in {
+    val df = FrameXIO.readCSV("/Users/cdong/.kaggle/competitions/titanic/train.csv",
+    ",", "")
+    df.prettyPrint()
   }
 }
