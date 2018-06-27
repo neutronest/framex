@@ -60,7 +60,7 @@ object ElemX {
     }
   }
 
-  def castToDouble(data: String) : ElemX = {
+  def wrapperDoubleOrString(data: String) : ElemX = {
     try {
       ElemX(ExDouble(data.toDouble))
     } catch {
