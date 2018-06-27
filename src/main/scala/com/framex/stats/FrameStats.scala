@@ -84,7 +84,7 @@ object Stats {
       dfAgg
     }
 
-    def getBasicStatsOp(op: String): (Vector[ElemX] => ElemX) = {
+      def getBasicStatsOp(op: String): (Vector[ElemX] => ElemX) = {
 
       import com.framex.`implicit`.VectorElemXOps._
 

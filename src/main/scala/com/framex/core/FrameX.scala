@@ -50,7 +50,7 @@ class FrameX(val data: Vector[Vector[ElemX]], val columnMap: Map[String, Int] = 
       case Some(columnIdx) =>
         //note that contrary to usual python slices, both the start and the stop are included!
         val series: Vector[ElemX] = data(columnIdx).slice(index.start, index.end + 1)
-        new FrameX(Vector(series))
+        FrameX(Vector(series), List(columnName))
       case None => throw new Exception(FrameErrorMessages.INDEX_OUT_OF_SIZE)
     }
   }
@@ -61,7 +61,7 @@ class FrameX(val data: Vector[Vector[ElemX]], val columnMap: Map[String, Int] = 
     data.foreach(seq => {
       row += Vector(seq(rowIdx))
     })
-    new FrameX(row.toVector)
+    FrameX(row.toVector)
   }
 
   def apply(rowFrom: Int, rowTo: Int): FrameX = {
@@ -69,7 +69,7 @@ class FrameX(val data: Vector[Vector[ElemX]], val columnMap: Map[String, Int] = 
     data.foreach(seq => {
       row ++= Vector(seq.slice(rowFrom, rowTo))
     })
-    new FrameX(row.toVector)
+    FrameX(row.toVector)
   }
 
   //  def apply(columnName: String) : FrameX = {
@@ -189,7 +189,8 @@ object FrameX {
     if (lenOfCol.distinct.size != 1) {
       throw new Exception(FrameErrorMessages.COLUMN_SIZE_MISMATCH)
     }
-    new FrameX(data.map(_.map(ElemX.wrapper)))
+    val columnNames : List[String] = List.range(0, data.length).map(_.toString)
+    FrameX(data.map(_.map(ElemX.wrapper)), columnNames)
   }
 
   def apply(data: Vector[Vector[_]], columns: List[String])(implicit ct: ClassTag[ElemX]): FrameX = {
@@ -202,7 +203,7 @@ object FrameX {
 
   def apply(data_ : Vector[ElemX]): FrameX = {
     val newFrame = Vector()
-    new FrameX(newFrame :+ data_)
+    FrameX(newFrame :+ data_, List("0"))
   }
 
   def apply(ll: List[List[_]])(implicit ct: ClassTag[ElemX]): FrameX = {
@@ -210,7 +211,8 @@ object FrameX {
     if (lenOfCol.distinct.size != 1) {
       throw new Exception("COLUMNS' SIZE MUST SAME!")
     }
-    FrameX(ll.map(_.toVector).toVector)
+    val columnNames : List[String] = List.range(0, ll.length).map(_.toString)
+    FrameX(ll.map(_.toVector).toVector, columnNames)
   }
 
   def apply(ll: List[List[_]], columns: List[String]): FrameX = {
