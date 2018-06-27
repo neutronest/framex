@@ -6,6 +6,7 @@ package com.framex
 import com.framex.core.Expr.ExDouble
 import com.framex.core.{ElemX, FrameX}
 import com.framex.io.FrameXIO
+import scala.io.Source
 import org.scalatest._
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
@@ -24,7 +25,8 @@ class TestIO extends FlatSpec with Matchers {
   }
 
   it should "read from csv" in {
-    val df = FrameXIO.readCSV("/Users/cdong/.kaggle/competitions/titanic/train.csv",
+    val csvPath = getClass.getResource("/test.csv").getPath
+    val df = FrameXIO.readCSV(csvPath,
     ",", "")
     df.prettyPrint()
   }
