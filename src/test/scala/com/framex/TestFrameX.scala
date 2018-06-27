@@ -170,7 +170,7 @@ class TestFrameX extends FlatSpec with Matchers {
     //df.loc(::, "date").data.foreach(f => f.foreach(f2 => println(f2.elem)))
     df.loc(::, "date").equals(
       FrameX(List(
-        List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12")), List("date"))) shouldEqual (true)
+        List("2015-01-10", "2017-08-22", "2016-03-03", "2011-02-02", "2017-02-12")), List("date"))  ) shouldEqual (true)
   }
 
   it should "loc(1::3,.)" in {

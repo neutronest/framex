@@ -13,9 +13,7 @@ import scala.collection.mutable.ListBuffer
 object FrameXIO {
 
   def readCSV(fileName: String,
-              sep: String,
-              header: String
-             ) : FrameX = {
+              sep: String) : FrameX = {
 
 
     val bufferedSource = io.Source.fromFile(fileName)
@@ -26,7 +24,7 @@ object FrameXIO {
 
     var data : ListBuffer[List[ElemX]] = ListBuffer()
     for (line <- bufferedSource.getLines.drop(1)) {
-      val cols = line.split(sep + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1).map(elem => ElemX.wrapper(elem.trim()))
+      val cols = line.split(sep + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1).map(elem => ElemX.castToDouble(elem.trim()))
       if (data.length == 0) {
         cols.foreach(elemx => {
           data += List(elemx)

@@ -27,7 +27,7 @@ class TestIO extends FlatSpec with Matchers {
   it should "read from csv" in {
     val csvPath = getClass.getResource("/test.csv").getPath
     val df = FrameXIO.readCSV(csvPath,
-    ",", "")
+    ",")
     df.prettyPrint()
   }
 }

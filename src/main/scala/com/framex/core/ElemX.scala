@@ -35,7 +35,6 @@ class ElemX(var elem: ExType) {
   }
 
 
-
   override def toString = s"ElemX(" + elem.toString + ")"
 }
 
@@ -58,6 +57,14 @@ object ElemX {
       case item: String => ElemX(item.asInstanceOf[String])
       case item: Char => ElemX(item.asInstanceOf[Char])
       case _ => ElemX(None)
+    }
+  }
+
+  def castToDouble(data: String) : ElemX = {
+    try {
+      ElemX(ExDouble(data.toDouble))
+    } catch {
+      case _ => ElemX(ExString(data))
     }
   }
 
