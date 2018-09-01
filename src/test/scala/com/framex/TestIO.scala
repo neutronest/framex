@@ -6,6 +6,8 @@ package com.framex
 import com.framex.core.Expr.ExDouble
 import com.framex.core.{ElemX, FrameX}
 import com.framex.io.FrameXIO
+import com.framex.utils.FrameErrorMessages
+
 import scala.io.Source
 import org.scalatest._
 import org.nd4j.linalg.api.ndarray.INDArray

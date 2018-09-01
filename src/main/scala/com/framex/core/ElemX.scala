@@ -6,7 +6,7 @@
 package com.framex.core
 
 import com.framex.core.Expr._
-import com.framex.utils.FrameErrorMessages
+import com.framex.utils.{Constants, FrameErrorMessages}
 
 class ElemX(var elem: ExType) {
 
@@ -31,6 +31,16 @@ class ElemX(var elem: ExType) {
       case ExInt(e1) => ElemX(ExInt(e1.abs))
       case ExDouble(e2) => ElemX(ExDouble(e2.abs))
       case _ => throw new Exception(FrameErrorMessages.ILLEGAL_OPERATE_TYPE)
+    }
+  }
+
+  def dtype : String = {
+    this.elem match {
+      case ExInt(_) => Constants.ELEMX_TYPE_INT
+      case ExDouble(_) => Constants.ELEMX_TYPE_DOUBLE
+      case ExString(_) => Constants.ELEMX_TYPE_STRING
+      case ExChar(_) => Constants.ELEMX_TYPE_CHAR
+      case _ => Constants.ELEMX_TYPE_STRING
     }
   }
 
@@ -89,6 +99,7 @@ object ElemX {
         case (_, _) => throw new Exception(FrameErrorMessages.ILLEGAL_OPERATE_TYPE)
       }
     }
+
 
     def times(x: ElemX, y: ElemX): ElemX = {
       (x.elem, y.elem) match {
