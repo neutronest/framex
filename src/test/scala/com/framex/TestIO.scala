@@ -32,4 +32,12 @@ class TestIO extends FlatSpec with Matchers {
     ",")
     df.prettyPrint()
   }
+//
+//  it should "read from type-error csv throw exception" in {
+//    val csvPath = getClass.getResource("/error_type_test.csv").getPath
+//    val thrown = intercept[Exception] {
+//      val df = FrameXIO.readCSV(csvPath, ",")
+//    }
+//    thrown.getMessage shouldEqual (FrameErrorMessages.COLUMN_TYPE_MISMATCH)
+//  }
 }
