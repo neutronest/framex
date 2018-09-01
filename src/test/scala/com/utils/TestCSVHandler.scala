@@ -31,4 +31,11 @@ class TestCSVHandler extends FlatSpec with Matchers  {
     csvDataT.foreach(columnData => println(columnData))
   }
 
+  it should "get data type from column-based data" in {
+
+    val columnData = List("1", "2", "3", "foobar", "5")
+    val dataType = CSVHandler.getDataTypeByColumn(columnData)
+    println("parseType: " + dataType)
+  }
+
 }

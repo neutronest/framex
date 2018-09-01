@@ -3,15 +3,13 @@
  */
 
 package com.framex
+
 import com.framex.core.Expr.ExDouble
 import com.framex.core.{ElemX, FrameX}
 import com.framex.io.FrameXIO
-import com.framex.utils.FrameErrorMessages
-
-import scala.io.Source
-import org.scalatest._
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
+import org.scalatest._
 
 class TestIO extends FlatSpec with Matchers {
 
@@ -23,21 +21,13 @@ class TestIO extends FlatSpec with Matchers {
         Vector(ElemX(ExDouble(1)), ElemX(ExDouble(3))),
         Vector(ElemX(ExDouble(2)), ElemX(ExDouble(4)))
       )
-    )) shouldEqual(true)
+    )) shouldEqual (true)
   }
 
   it should "read from csv" in {
     val csvPath = getClass.getResource("/test.csv").getPath
     val df = FrameXIO.readCSV(csvPath,
-    ",")
+      ",")
     df.prettyPrint()
   }
-//
-//  it should "read from type-error csv throw exception" in {
-//    val csvPath = getClass.getResource("/error_type_test.csv").getPath
-//    val thrown = intercept[Exception] {
-//      val df = FrameXIO.readCSV(csvPath, ",")
-//    }
-//    thrown.getMessage shouldEqual (FrameErrorMessages.COLUMN_TYPE_MISMATCH)
-//  }
 }
