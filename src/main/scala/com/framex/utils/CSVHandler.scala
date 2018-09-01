@@ -38,11 +38,17 @@ object CSVHandler {
     }
 
     for (line <- iter) {
-      val col = line.split(quotation_regex).map(_.trim).toList
-      csvData += col
-      println(col)
+      val row = line.split(quotation_regex).map(_.trim).toList
+      csvData += row
     }
     csvData.toList
+  }
+
+  def getColumnBasedData(csvData: List[List[String]]) : List[List[String]] = {
+
+    val csvDataArray = csvData.map(rowData => rowData.toArray).toArray
+    val csvDataTArray = csvDataArray.transpose
+    csvDataTArray.map(rowData => rowData.toList).toList
   }
 }
 
