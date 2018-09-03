@@ -10,7 +10,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class TestElemX extends FlatSpec with Matchers {
 
-
+  
   val n = implicitly[Numeric[ElemX]]
   import n._
 
