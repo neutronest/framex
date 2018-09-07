@@ -66,7 +66,7 @@ object ElemX {
       case item: Double => ElemX(item.asInstanceOf[Double])
       case item: String => ElemX(item.asInstanceOf[String])
       case item: Char => ElemX(item.asInstanceOf[Char])
-      case _ => ElemX(None)
+      case _ => ElemX(ExNone)
     }
   }
 

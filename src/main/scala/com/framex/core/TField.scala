@@ -11,7 +11,7 @@ import scalaz.{Coyoneda, _}
 //}
 
 sealed trait TField[A]
-case object None
+case object TFNone
 case class IntField(x: Int) extends TField[Int]
 case class DoubleField(x: Double) extends TField[Double]
 case class StringField(x: String) extends TField[String]
