@@ -10,10 +10,10 @@ lazy val root = (project in file(".")).settings(
   name := "framex",
   classpathTypes += "maven-plugin",
 
-  resolvers ++= Seq(
-    Resolver.sonatypeRepo("releases"),
-    Resolver.sonatypeRepo("snapshots")
-  ),
+//  resolvers ++= Seq(
+//    Resolver.sonatypeRepo("releases"),
+//    Resolver.sonatypeRepo("snapshots")
+//  ),
 
   libraryDependencies += scalaTest % Test,
   libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.12.6",
