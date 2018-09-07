@@ -3,13 +3,40 @@
  */
 
 package com.framex.core
+import com.framex.core
+import com.framex.core.TField.CoyoTField
 import scalaz.Functor
+import shapeless._
+import scalaz.Coyoneda
 
-sealed trait TField[M[_], A] extends Functor[TField[M,A]]
-case object None extends TField[Nothing] {
-  override def map[Nothing](fa: TField[Nothing])(f: Nothing => Nothing): TField[Nothing]
-  = None
-}
+
+//object Foo {
+//  type ISB = Int :+: String :+: Boolean :+: CNil
+//
+//}
+
+sealed trait TField[A]
+case object None
 case class IntField(x: Int) extends TField[Int]
 case class DoubleField(x: Double) extends TField[Double]
 case class StringField(x: String) extends TField[String]
+
+object TField {
+
+  import scalaz.Isomorphism._
+
+
+
+  type CoyoTField[A] = Coyoneda[TField, A]
+  
+
+  def fmap[A, B](fa: CoyoTField[A])(f: A => B) : CoyoTField[B] = {
+    fa.unlift match {
+      case IntField(x: Int) => fa.map(f)
+      case DoubleField(x: Double) => fa.map(f)
+      case StringField(x: String) => fa.map(f)
+    }
+  }
+
+}
+
