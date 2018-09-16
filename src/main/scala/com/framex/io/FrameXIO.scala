@@ -5,7 +5,7 @@
 package com.framex.io
 
 import com.framex.core.Expr.{ExDouble, ExString}
-import com.framex.core.{ElemX, FrameX}
+import com.framex.core.{ElemX, FrameX2}
 import com.framex.utils.{CSVHandler, Constants}
 import org.nd4j.linalg.api.ndarray.INDArray
 
@@ -16,7 +16,7 @@ object FrameXIO {
 
 
   def readCSV(fileName: String,
-              sep: String): FrameX = {
+              sep: String): FrameX2 = {
 
     val bufferedSource = CSVHandler.getSourceFromCSV(fileName)
     val headerNames = CSVHandler.getHeaderFromSource(bufferedSource)
@@ -32,19 +32,19 @@ object FrameXIO {
         dataBuffer += columnData.map(s => ElemX(ExString(s)))
       }
     }
-    FrameX(dataBuffer.toList, headerNames)
+    FrameX2(dataBuffer.toList, headerNames)
   }
 
-  def toCSV(df: FrameX, fileName: String): Unit = {
+  def toCSV(df: FrameX2, fileName: String): Unit = {
     ???
   }
 
-  def readND4J(nd4jData: INDArray): FrameX = {
+  def readND4J(nd4jData: INDArray): FrameX2 = {
     val data = nd4jData.transpose().toDoubleMatrix().map(f => f.map(ElemX.wrapper).toVector).toVector
-    FrameX(data)
+    FrameX2(data)
   }
 
-  def toND4J(df: FrameX): Any = {
+  def toND4J(df: FrameX2): Any = {
     ???
   }
 

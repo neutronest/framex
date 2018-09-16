@@ -6,7 +6,7 @@ package com.framex.core
 
 import scala.collection.mutable
 
-class GroupByFrameX(var dataMap: mutable.Map[String, FrameX]) {
+class GroupByFrameX(var dataMap: mutable.Map[String, FrameX2]) {
 
   import com.framex.stats.Stats._
   def agg(opName: String) : GroupByFrameX = {

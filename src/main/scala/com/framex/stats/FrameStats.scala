@@ -4,14 +4,14 @@
 
 package com.framex.stats
 
-import com.framex.core.{ElemX, FrameX}
+import com.framex.core.{ElemX, FrameX2}
 import com.framex.utils.FrameErrorMessages
 
 object Stats {
 
-  implicit class FrameStats(var df: FrameX) {
+  implicit class FrameStats(var df: FrameX2) {
 
-    def agg(opName: String): FrameX = {
+    def agg(opName: String): FrameX2 = {
       val data = df.data.map(columnData => {
         Vector(getBasicStatsOp(opName).apply(columnData))
       })
@@ -22,12 +22,12 @@ object Stats {
           kv._1 -> (opName -> kv._2)
         }
       }.mapValues(Map(_))
-      val dfAgg = FrameX(data)
+      val dfAgg = FrameX2(data)
       dfAgg.aggMap = aggMap
       dfAgg
     }
 
-    def agg(opNames: List[String]): FrameX = {
+    def agg(opNames: List[String]): FrameX2 = {
       val data = df.data.flatMap(columnData => {
         opNames.map(op => Vector(getBasicStatsOp(op).apply(columnData))).toVector
       })
@@ -45,12 +45,12 @@ object Stats {
           }
         }.toMap
       }
-      val dfAgg = FrameX(data)
+      val dfAgg = FrameX2(data)
       dfAgg.aggMap = aggMap
       dfAgg
     }
 
-    def agg(opMap: Map[String, List[String]]): FrameX = {
+    def agg(opMap: Map[String, List[String]]): FrameX2 = {
       var columnIndexAcc = 0
       val iterable = {
         for {
@@ -79,7 +79,7 @@ object Stats {
         case (col, list) =>
           col -> list.map(_._2).toMap
       }
-      val dfAgg = FrameX(data)
+      val dfAgg = FrameX2(data)
       dfAgg.aggMap = aggMap
       dfAgg
     }

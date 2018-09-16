@@ -70,6 +70,9 @@ object ElemX {
     }
   }
 
+
+
+
   def wrapperDoubleOrString(data: String) : ElemX = {
     try {
       ElemX(ExDouble(data.toDouble))
