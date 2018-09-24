@@ -4,7 +4,7 @@
 package com.framex.core
 
 import com.framex.core.Expr.BottomType
-import scalaz.{:+:, Applicative, Functor, Monad}
+import scalaz.{:+:, Applicative, Functor, Monad, Coyoneda, Yoneda}
 import shapeless.HList
 
 

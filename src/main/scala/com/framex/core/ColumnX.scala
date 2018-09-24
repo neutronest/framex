@@ -4,7 +4,7 @@
 package com.framex.core
 
 import com.framex.utils.FrameErrorMessages
-import scalaz.Functor
+import scalaz.{Functor, Monad}
 
 sealed trait ColumnX[A]
 case class ColumnXData[A](title: String, data: Vector[A]) extends ColumnX[A]
@@ -21,4 +21,10 @@ object ColumnX {
       }
     }
   }
+
+//  implicit val columnXMonad = new Monad[ColumnX] {
+//    override def bind[A, B](fa: ColumnX[A])(f: A => ColumnX[B]): ColumnX[B] = ???
+//
+//    override def point[A](a: => A): ColumnX[A] = ???
+//  }
 }
