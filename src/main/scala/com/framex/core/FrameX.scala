@@ -7,8 +7,6 @@ package com.framex.core
 import com.framex.core.seq.{DataSeq, FSeq, GroupBySeq}
 import com.framex.utils.{Constants, FrameErrorMessages}
 
-import scala.reflect.ClassTag
-
 case class FrameX(val data: Vector[FSeq[_]]) {
 
   def columnNames(): Vector[String] = this.data.map {
