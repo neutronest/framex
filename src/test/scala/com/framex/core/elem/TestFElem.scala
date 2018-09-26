@@ -2,9 +2,8 @@
  * Copyright (c) 2018.
  */
 
-package com.framex
+package com.framex.core.elem
 
-import com.framex.core.elem.DataElem
 import org.scalatest.{FlatSpec, Matchers}
 
 class TestFElem extends FlatSpec with Matchers{

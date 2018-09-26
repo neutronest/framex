@@ -3,7 +3,7 @@
  * Copyright (c) 2018.
  */
 
-package com.framex.core.Expr
+package com.framex.core.archive.Expr
 
 class BottomType[T]
 

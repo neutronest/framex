@@ -5,7 +5,7 @@
 
 package com.framex.core
 
-import com.framex.core.Expr._
+import com.framex.core.archive.Expr._
 import com.framex.utils.{Constants, FrameErrorMessages}
 
 class ElemX(var elem: ExType) {

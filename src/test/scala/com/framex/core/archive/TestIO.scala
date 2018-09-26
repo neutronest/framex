@@ -2,10 +2,10 @@
  * Copyright (c) 2018.
  */
 
-package com.framex
+package com.framex.core.archive
 
-import com.framex.core.Expr.ExDouble
-import com.framex.core.{ElemX, FrameX2}
+import com.framex.core.ElemX
+import com.framex.core.archive.Expr.ExDouble
 import com.framex.io.FrameXIO
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j

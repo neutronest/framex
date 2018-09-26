@@ -1,8 +1,9 @@
-package com.framex
+/*
+ * Copyright (c) 2018.
+ */
 
+package com.framex.core.archive
 
-
-import com.framex.core.{ElemX, SeqX}
 import org.scalatest._
 
 

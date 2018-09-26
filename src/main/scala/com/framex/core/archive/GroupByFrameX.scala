@@ -2,7 +2,7 @@
  * Copyright (c) 2018.
  */
 
-package com.framex.core
+package com.framex.core.archive
 
 import scala.collection.mutable
 

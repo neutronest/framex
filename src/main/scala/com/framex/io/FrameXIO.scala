@@ -4,8 +4,9 @@
 
 package com.framex.io
 
-import com.framex.core.Expr.{ExDouble, ExString}
-import com.framex.core.{ElemX, FrameX2}
+import com.framex.core.archive.Expr.{ExDouble, ExString}
+import com.framex.core.ElemX
+import com.framex.core.archive.FrameX2
 import com.framex.utils.{CSVHandler, Constants}
 import org.nd4j.linalg.api.ndarray.INDArray
 

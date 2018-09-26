@@ -3,9 +3,10 @@
  * Copyright (c) 2018.
  */
 
-package com.framex.core
+package com.framex.core.archive
 
-import com.framex.core.Expr.BottomType
+import com.framex.core.ElemX
+import com.framex.core.archive.Expr.BottomType
 
 import scala.reflect.ClassTag
 

@@ -4,7 +4,8 @@
 
 package com.framex.stats
 
-import com.framex.core.{ElemX, FrameX2}
+import com.framex.core.ElemX
+import com.framex.core.archive.FrameX2
 import com.framex.utils.FrameErrorMessages
 
 object Stats {

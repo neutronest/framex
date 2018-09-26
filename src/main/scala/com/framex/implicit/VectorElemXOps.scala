@@ -5,7 +5,7 @@
 package com.framex.`implicit`
 
 import com.framex.core.ElemX
-import com.framex.core.Expr.{ExDouble, ExInt}
+import com.framex.core.archive.Expr.{ExDouble, ExInt}
 
 
 object VectorElemXOps {

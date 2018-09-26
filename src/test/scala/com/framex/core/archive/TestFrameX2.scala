@@ -2,13 +2,11 @@
  * Copyright (c) 2018.
  */
 
-package com.framex
+package com.framex.core.archive
 
-import com.framex.core.Expr.{ExDouble, ExInt}
+import com.framex.core.ElemX
+import com.framex.core.archive.Expr.{ExDouble, ExInt}
 import org.scalatest._
-import com.framex.core.{ElemX, FrameX2}
-
-import scala.collection.mutable
 
 class TestFrameX2 extends FlatSpec with Matchers {
 

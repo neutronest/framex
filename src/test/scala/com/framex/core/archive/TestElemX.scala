@@ -2,10 +2,10 @@
  * Copyright (c) 2018.
  */
 
-package com.framex
+package com.framex.core.archive
 
 import com.framex.core.ElemX
-import com.framex.core.Expr.{ExDouble, ExInt}
+import com.framex.core.archive.Expr.{ExDouble, ExInt}
 import org.scalatest.{FlatSpec, Matchers}
 
 class TestElemX extends FlatSpec with Matchers {
