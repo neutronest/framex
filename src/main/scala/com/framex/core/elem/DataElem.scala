@@ -4,6 +4,8 @@
 
 package com.framex.core.elem
 
+import scalaz.Functor
+
 case class DataElem[A](data: A) extends FElem[A] {
 
   def +(other:DataElem[A])(implicit num: Numeric[A]) : DataElem[A] = {
@@ -23,6 +25,14 @@ case class DataElem[A](data: A) extends FElem[A] {
 
 
 object DataElem {
+
+  implicit val dataElemFunctor = new Functor[DataElem] {
+    override def map[A, B](fa: DataElem[A])(f: A => B): DataElem[B] = {
+      DataElem(f(fa.data))
+    }
+  }
+
+
 
   def plus[A](de1: DataElem[A], de2:DataElem[A])(implicit num: Numeric[A]) : DataElem[A] = {
     DataElem(num.plus(de1.data, de2.data))
