@@ -4,7 +4,7 @@
 
 package com.framex.`implicit`
 
-import com.framex.core.ElemX
+import com.framex.core.archive.ElemX
 import com.framex.core.archive.Expr.{ExDouble, ExInt}
 
 

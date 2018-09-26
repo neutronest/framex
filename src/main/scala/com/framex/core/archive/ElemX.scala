@@ -3,7 +3,7 @@
  * Copyright (c) 2018.
  */
 
-package com.framex.core
+package com.framex.core.archive
 
 import com.framex.core.archive.Expr._
 import com.framex.utils.{Constants, FrameErrorMessages}

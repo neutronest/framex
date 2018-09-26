@@ -4,7 +4,6 @@
 
 package com.framex.core.archive
 
-import com.framex.core.ElemX
 import com.framex.core.archive.Expr.{ExDouble, ExInt}
 import org.scalatest.{FlatSpec, Matchers}
 

@@ -5,7 +5,6 @@
 
 package com.framex.core.archive
 
-import com.framex.core.ElemX
 import com.framex.utils.FrameErrorMessages
 
 import scala.collection.mutable
